@@ -20,6 +20,7 @@ const Index = () => {
       entering={FadeInDown.delay(100).duration(1000)}
       className="flex-row flex-1 justify-center items-center"
     >
+      <StatusBar style="dark" />
       <Text className="text-3xl">Home Page</Text>
     </Animated.View>
   );
