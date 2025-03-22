@@ -12,7 +12,7 @@ import CircularProgress from "react-native-circular-progress-indicator";
 import { theme } from "../../Theme";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { AntDesign } from "@expo/vector-icons";
-import { useNavigation } from "expo-router";
+import { useNavigation } from "@react-navigation/native";
 
 const SubjectWiseList = () => {
   const classesData = classes;

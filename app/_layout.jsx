@@ -11,10 +11,10 @@ import {
 import { theme } from "../Theme";
 import { StatusBar } from "expo-status-bar";
 
-NavigationBar.setBackgroundColorAsync("white");
-NavigationBar.setBorderColorAsync("#eeeeee");
-
 const Layout = () => {
+  NavigationBar.setBackgroundColorAsync("white");
+  NavigationBar.setBorderColorAsync("#eeeeee");
+
   return (
     <Tabs
       screenOptions={{

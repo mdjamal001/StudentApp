@@ -7,7 +7,7 @@ import { StatusBar } from "expo-status-bar";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { useFocusEffect } from "@react-navigation/native";
 import CurrentCard from "../../components/Attendance/currentCard";
-import { useNavigation } from "expo-router";
+import { useNavigation } from "@react-navigation/native";
 
 const PrimaryAttendance = () => {
   const navigation = useNavigation();
