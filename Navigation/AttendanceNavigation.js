@@ -9,8 +9,11 @@ const Stack = createNativeStackNavigator();
 
 const AttendanceNavigation = () => {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Attendance" component={PrimaryAttendance} />
+    <Stack.Navigator
+      screenOptions={{ headerShown: false }}
+      initialRouteName="Primary Attendance"
+    >
+      <Stack.Screen name="Primary Attendance" component={PrimaryAttendance} />
       <Stack.Screen
         name="Subject-wise Attendance"
         component={SubjectWiseList}
