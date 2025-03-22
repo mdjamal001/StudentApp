@@ -9,7 +9,7 @@ import {
   Text,
   ScrollView,
 } from "react-native";
-import CircularProgress from "react-native-circular-progress-indicator";
+// import CircularProgress from "react-native-circular-progress-indicator";
 import { theme } from "../../Theme";
 import { Calendar, LocaleConfig } from "react-native-calendars";
 import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
@@ -31,7 +31,7 @@ const SubjectAttendance = () => {
           className="items-center bg-white p-5 m-2  mt-2"
         >
           {/* <View className="items-center bg-white p-5 m-2  mt-2"> */}
-          <CircularProgress
+          {/* <CircularProgress
             radius={70}
             value={75}
             duration={1500}
@@ -39,7 +39,8 @@ const SubjectAttendance = () => {
             activeStrokeColor={theme.primaryColor(1)}
             inActiveStrokeColor={theme.primaryColor(0.2)}
             valueSuffix="%"
-          />
+          /> */}
+          <Text>75%</Text>
           <View className="mt-5 flex-row justify-evenly w-full">
             <View
               className="items-center p-3 rounded-lg w-40"

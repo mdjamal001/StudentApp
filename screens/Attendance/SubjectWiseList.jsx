@@ -8,7 +8,7 @@ import {
   View,
 } from "react-native";
 import { classes } from "../../sampleData/classes";
-import CircularProgress from "react-native-circular-progress-indicator";
+// import CircularProgress from "react-native-circular-progress-indicator";
 import { theme } from "../../Theme";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { AntDesign } from "@expo/vector-icons";
@@ -43,7 +43,7 @@ const SubjectWiseList = () => {
                   <Text className="text-xl line-clamp-1 w-10/12">
                     {classData.name}
                   </Text>
-                  <CircularProgress
+                  {/* <CircularProgress
                     radius={30}
                     value={75}
                     titleColor="#252525"
@@ -52,7 +52,8 @@ const SubjectWiseList = () => {
                     inActiveStrokeColor={theme.primaryColor(0.2)}
                     inActiveStrokeWidth={5}
                     duration={1000}
-                  />
+                  /> */}
+                  <Text>75%</Text>
                 </View>
               </TouchableNativeFeedback>
               {/* </View> */}

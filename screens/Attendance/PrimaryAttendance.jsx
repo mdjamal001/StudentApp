@@ -30,7 +30,7 @@ const PrimaryAttendance = () => {
           <View className="bg-white m-3 pt-3 rounded-lg">
             <View className="flex-row justify-around items-center border-b-2 pb-3  border-gray-200">
               <Text className="text-2xl">Overall Attendance</Text>
-              <CircularProgress
+              {/* <CircularProgress
                 radius={40}
                 value={75}
                 valueSuffix="%"
@@ -39,7 +39,8 @@ const PrimaryAttendance = () => {
                 inActiveStrokeColor={theme.primaryColor(0.2)}
                 inActiveStrokeWidth={8}
                 duration={1000}
-              />
+              /> */}
+              <Text>75%</Text>
             </View>
             <TouchableNativeFeedback
               onPress={() => navigation.navigate("Subject-wise Attendance")}
