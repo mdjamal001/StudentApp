@@ -34,7 +34,6 @@ const PrimaryAttendance = () => {
                 radius={40}
                 value={75}
                 valueSuffix="%"
-                progressValueColor="#252525"
                 activeStrokeColor={theme.primaryColor(1)}
                 inActiveStrokeColor={theme.primaryColor(0.2)}
                 inActiveStrokeWidth={8}
