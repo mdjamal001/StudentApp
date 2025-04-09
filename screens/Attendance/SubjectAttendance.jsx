@@ -12,7 +12,11 @@ import {
 import CircularProgress from "react-native-circular-progress-indicator";
 import { theme } from "../../Theme";
 import { Calendar, LocaleConfig } from "react-native-calendars";
-import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
+import Animated, {
+  FadeIn,
+  FadeInDown,
+  FadeInUp,
+} from "react-native-reanimated";
 
 const SubjectAttendance = () => {
   const { params } = useRoute();
@@ -27,8 +31,15 @@ const SubjectAttendance = () => {
       </View>
       <ScrollView>
         <Animated.View
-          entering={FadeInUp.delay(100).duration(800)}
-          className="items-center bg-white p-5 m-2  mt-2"
+          entering={FadeIn.delay(100).duration(800)}
+          className="items-center bg-white p-5 m-2  mt-2 rounded-lg"
+          style={{
+            shadowColor: "black",
+            shadowOffset: { width: 0, height: 0 },
+            shadowOpacity: 0.8,
+            shadowRadius: 6,
+            elevation: 6,
+          }}
         >
           {/* <View className="items-center bg-white p-5 m-2  mt-2"> */}
           <CircularProgress
@@ -59,11 +70,28 @@ const SubjectAttendance = () => {
           {/* </View> */}
         </Animated.View>
         <Animated.View
-          entering={FadeInDown.delay(100).duration(800)}
-          className="m-2 mt-0"
+          entering={FadeIn.delay(200).duration(800)}
+          className="m-2 mt-0 rounded-lg p-1 bg-white"
+          style={{
+            shadowColor: "black",
+            shadowOffset: { width: 0, height: 0 },
+            shadowOpacity: 0.8,
+            shadowRadius: 6,
+            elevation: 5,
+          }}
         >
           {/* <View className="m-2 mt-0"> */}
           <Calendar
+            theme={{
+              todayTextColor: theme.primaryColor(1),
+              arrowColor: theme.primaryColor(1),
+              textDayFontFamily: "Poppins_400Regular",
+              textMonthFontFamily: "Poppins_500Medium",
+              textDayHeaderFontFamily: "Poppins_500Medium",
+              textDayFontSize: 16,
+              textMonthFontSize: 18,
+            }}
+            entering={FadeInDown.delay(100).duration(800)}
             hideExtraDays={true}
             markedDates={{
               "2025-03-17": {

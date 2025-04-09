@@ -1,30 +1,40 @@
-import React from "react";
-import { Text, TouchableNativeFeedback, TouchableOpacity } from "react-native";
-import { StyleSheet, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Text, TouchableOpacity, View } from "react-native";
 import { getCurrentDateInfo } from "../../utils/currentDate";
 import { EvilIcons } from "@expo/vector-icons";
 import { theme } from "../../Theme";
-import Animated, { FadeInDown } from "react-native-reanimated";
-import { useFocusEffect } from "@react-navigation/native";
-import { classesSchedule } from "../../sampleData/classesSchedule";
 import ClassCard from "./classCard";
+import * as SQLite from "expo-sqlite";
 
 const CurrentCard = () => {
-  let currentDate = getCurrentDateInfo();
-  const [key, setKey] = React.useState(0);
+  const [todaysSchedule, setTodaysSchedule] = useState([]);
+  const currentDate = getCurrentDateInfo();
 
-  useFocusEffect(
-    React.useCallback(() => {
-      setKey((prevKey) => prevKey + 1);
-    }, [])
-  );
+  useEffect(() => {
+    const getTodaySchedule = async () => {
+      const db = await SQLite.openDatabaseAsync("localStorage");
+
+      const result = await db.getAllAsync(
+        `SELECT * FROM timetable WHERE weekday="${currentDate.day}"`
+      );
+
+      setTodaysSchedule(result);
+    };
+
+    getTodaySchedule();
+  }, [currentDate.day]);
+
   return (
-    <Animated.View
-      key={key}
-      entering={FadeInDown.delay(250).duration(500)}
+    <View
       className="mx-3 p-3 bg-white rounded-lg"
+      style={{
+        shadowColor: "black",
+        shadowOffset: { width: 0, height: 5 },
+        shadowOpacity: 0.8,
+        shadowRadius: 6,
+        elevation: 6,
+      }}
     >
-      {/* <View className="mx-3 p-3 bg-white rounded-lg"> */}
       <View className="flex-row justify-between mb-8">
         <Text className="text-xl font-bold">
           {currentDate.day}, {currentDate.date} {currentDate.month}{" "}
@@ -39,22 +49,24 @@ const CurrentCard = () => {
           />
         </TouchableOpacity>
       </View>
-      {currentDate.day == "Sunday" || currentDate.day == "Saturday" ? (
+
+      {currentDate.day === "" || currentDate.day === "Saturday" ? (
         <View className="h-60 flex-row justify-center items-center">
           <Text className="text-lg text-gray-500">No classes today!</Text>
         </View>
+      ) : todaysSchedule.length === 0 ? (
+        <View className="h-60 flex-row justify-center items-center">
+          <Text className="text-lg text-gray-500">Loading classes...</Text>
+        </View>
       ) : (
         <View>
-          {classesSchedule[currentDate.day].map((classData, index) => {
-            return <ClassCard classData={classData} key={index} />;
-          })}
+          {todaysSchedule.map((classData, index) => (
+            <ClassCard classData={classData} key={index} />
+          ))}
         </View>
       )}
-      {/* </View> */}
-    </Animated.View>
+    </View>
   );
 };
-
-const styles = StyleSheet.create({});
 
 export default CurrentCard;

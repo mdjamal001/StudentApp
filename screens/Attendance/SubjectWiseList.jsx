@@ -10,7 +10,7 @@ import {
 import { classes } from "../../sampleData/classes";
 import CircularProgress from "react-native-circular-progress-indicator";
 import { theme } from "../../Theme";
-import Animated, { FadeInDown } from "react-native-reanimated";
+import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
@@ -30,16 +30,24 @@ const SubjectWiseList = () => {
         {classesData.map((classData, index) => {
           return (
             <Animated.View
-              entering={FadeInDown.delay(index * 100).duration(800)}
+              entering={FadeIn.delay(index * 100).duration(800)}
               key={index}
+              className="mt-3 mx-2 bg-white rounded-lg items-center"
+              style={{
+                shadowColor: "black",
+                shadowOffset: { width: 0, height: 0 },
+                shadowOpacity: 0.8,
+                shadowRadius: 6,
+                elevation: 6,
+              }}
             >
               {/* <View key={index}> */}
-              <TouchableNativeFeedback
+              <TouchableOpacity
                 onPress={() =>
                   navigation.navigate("Subject Attendance", { ...classData })
                 }
               >
-                <View className=" flex-row justify-between mx-3 mt-3 p-2 px-3 bg-white rounded-lg items-center">
+                <View className=" flex-row justify-between mx-3  p-2 px-3 bg-white rounded-lg items-center">
                   <Text className="text-xl line-clamp-1 w-10/12">
                     {classData.name}
                   </Text>
@@ -54,7 +62,7 @@ const SubjectWiseList = () => {
                     duration={1000}
                   />
                 </View>
-              </TouchableNativeFeedback>
+              </TouchableOpacity>
               {/* </View> */}
             </Animated.View>
           );
