@@ -8,17 +8,33 @@ import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 import { useFocusEffect } from "@react-navigation/native";
 import CurrentCard from "../../components/Attendance/currentCard";
 import { useNavigation } from "@react-navigation/native";
+import * as SQLite from "expo-sqlite";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 const PrimaryAttendance = () => {
   const navigation = useNavigation();
 
-  const [key, setKey] = React.useState(0);
+  const [attPercent, setAttPercent] = React.useState({});
 
-  useFocusEffect(
-    React.useCallback(() => {
-      setKey((prevKey) => prevKey + 1);
-    }, [])
-  );
+  useFocusEffect(() => {
+    const getAttPercent = async () => {
+      const db = await SQLite.openDatabaseAsync("localStorage");
+      const result = await db.getAllAsync(
+        `SELECT * FROM subjects WHERE semester=4`
+      );
+      let ovr_total_classes = 0;
+      let ovr_attended_classes = 0;
+      result.forEach((subject) => {
+        ovr_total_classes += subject.total_classes;
+        ovr_attended_classes += subject.attended_classes;
+      });
+      let att_percent = Math.round(
+        (ovr_attended_classes / ovr_total_classes) * 100
+      );
+      setAttPercent(att_percent);
+    };
+    getAttPercent();
+  });
 
   return (
     <View>
@@ -26,8 +42,7 @@ const PrimaryAttendance = () => {
         <Text className="text-2xl  ml-5">Attendance</Text>
       </View>
       <ScrollView showsVerticalScrollIndicator={false} className="h-full">
-        <Animated.View
-          key={key}
+        <View
           className="bg-white m-3 pt-3 rounded-lg"
           style={{
             shadowColor: "black",
@@ -41,7 +56,7 @@ const PrimaryAttendance = () => {
             <Text className="text-2xl">Overall Attendance</Text>
             <CircularProgress
               radius={40}
-              value={75}
+              value={attPercent}
               valueSuffix="%"
               activeStrokeColor={theme.primaryColor(1)}
               inActiveStrokeColor={theme.primaryColor(0.2)}
@@ -62,7 +77,7 @@ const PrimaryAttendance = () => {
               />
             </View>
           </TouchableNativeFeedback>
-        </Animated.View>
+        </View>
         {/* </View> */}
         {/* current day's attendance */}
         <CurrentCard />

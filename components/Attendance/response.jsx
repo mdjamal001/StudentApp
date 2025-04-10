@@ -11,8 +11,9 @@ const Response = ({ subject }) => {
   useFocusEffect(() => {
     const checkStatus = async () => {
       const db = await SQLite.openDatabaseAsync("localStorage");
+      console.log("ycgdcsd");
       const row = await db.getFirstAsync(
-        `SELECT * FROM attendance WHERE subject="${subject}" AND date="${currentDate.date}-${currentDate.month}-${currentDate.year}"`
+        `SELECT * FROM attendance WHERE subject_id=${subject.id} AND date="10-${currentDate.month}-${currentDate.year}"`
       );
       console.log("Row: ", row);
       if (row) {
@@ -24,10 +25,26 @@ const Response = ({ subject }) => {
 
   const setAttStatus = async (AttStatus) => {
     setStatus(AttStatus);
+
+    console.log("Attendance status: ", AttStatus);
     const db = await SQLite.openDatabaseAsync("localStorage");
     await db.execAsync(
-      `INSERT INTO attendance (date, subject, status) VALUES ("${currentDate.date}-${currentDate.month}-${currentDate.year}", "${subject}", "${AttStatus}")`
+      `INSERT INTO attendance (date, subject_id, status) VALUES ("10-${currentDate.month}-${currentDate.year}", ${subject.id}, "${AttStatus}")`
     );
+    console.log("Attendance status: ", AttStatus);
+    if (AttStatus === "Present") {
+      await db.execAsync(
+        `UPDATE subjects SET attended_classes=attended_classes+1, total_classes=total_classes+1 WHERE id=${subject.id}`
+      );
+    } else if (AttStatus === "Absent") {
+      await db.execAsync(
+        `UPDATE subjects SET total_classes=total_classes+1 WHERE id=${subject.id}`
+      );
+    }
+    await db.execAsync(
+      `UPDATE subjects SET attendance_percent=(attended_classes/total_classes)*100 WHERE id=${subject.id}`
+    );
+    console.log("Attendance status updated");
   };
 
   if (status.length > 0) {

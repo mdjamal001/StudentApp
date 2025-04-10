@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -13,10 +13,22 @@ import { theme } from "../../Theme";
 import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import * as SQLite from "expo-sqlite";
 
 const SubjectWiseList = () => {
-  const classesData = classes;
+  const [subjectsData, setSubjectsData] = useState([]);
   const navigation = useNavigation();
+
+  useEffect(() => {
+    const getSubjectsData = async () => {
+      const db = await SQLite.openDatabaseAsync("localStorage");
+      const result = await db.getAllAsync(
+        `SELECT * FROM subjects WHERE semester=4`
+      );
+      setSubjectsData(result);
+    };
+    getSubjectsData();
+  });
 
   return (
     <View>
@@ -27,7 +39,7 @@ const SubjectWiseList = () => {
         <Text className="text-2xl  ml-5">Subject-wise Attendance</Text>
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
-        {classesData.map((classData, index) => {
+        {subjectsData.map((subjectData, index) => {
           return (
             <Animated.View
               entering={FadeIn.delay(index * 100).duration(800)}
@@ -44,16 +56,16 @@ const SubjectWiseList = () => {
               {/* <View key={index}> */}
               <TouchableOpacity
                 onPress={() =>
-                  navigation.navigate("Subject Attendance", { ...classData })
+                  navigation.navigate("Subject Attendance", { ...subjectData })
                 }
               >
                 <View className=" flex-row justify-between mx-3  p-2 px-3 bg-white rounded-lg items-center">
                   <Text className="text-xl line-clamp-1 w-10/12">
-                    {classData.name}
+                    {subjectData.subject}
                   </Text>
                   <CircularProgress
                     radius={30}
-                    value={75}
+                    value={subjectData.attendance_percent}
                     titleColor="#252525"
                     valueSuffix="%"
                     activeStrokeColor={theme.primaryColor(1)}

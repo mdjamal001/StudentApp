@@ -27,7 +27,7 @@ const SubjectAttendance = () => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <AntDesign name="arrowleft" size={25} color={"black"} />
         </TouchableOpacity>
-        <Text className="text-2xl  ml-5 line-clamp-1">{params.name}</Text>
+        <Text className="text-2xl  ml-5 line-clamp-1">{params.subject}</Text>
       </View>
       <ScrollView>
         <Animated.View
@@ -44,7 +44,7 @@ const SubjectAttendance = () => {
           {/* <View className="items-center bg-white p-5 m-2  mt-2"> */}
           <CircularProgress
             radius={70}
-            value={75}
+            value={params.attendance_percent}
             duration={1500}
             titleColor="#252525"
             activeStrokeColor={theme.primaryColor(1)}
@@ -56,14 +56,18 @@ const SubjectAttendance = () => {
               className="items-center p-3 rounded-lg w-40"
               style={{ backgroundColor: theme.primaryColor(0.2) }}
             >
-              <Text className="text-3xl font-semibold text-gray-800">15</Text>
+              <Text className="text-3xl font-semibold text-gray-800">
+                {params.total_classes}
+              </Text>
               <Text className="text-sm">Total classes</Text>
             </View>
             <View
               className="items-center p-3 rounded-lg w-40"
               style={{ backgroundColor: theme.primaryColor(0.2) }}
             >
-              <Text className="text-3xl font-semibold text-gray-800">12</Text>
+              <Text className="text-3xl font-semibold text-gray-800">
+                {params.attended_classes}
+              </Text>
               <Text className="text-sm">Attended classes</Text>
             </View>
           </View>
