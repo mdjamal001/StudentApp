@@ -36,7 +36,9 @@ const ClassCard = ({ classData }) => {
         backgroundColor: theme.secondaryColor(0.1),
       }}
     >
-      <Text className="text-2xl line-clamp-1 mb-2">{subjectData.subject}</Text>
+      <Text className="text-2xl line-clamp-1 mb-2">
+        {subjectData.subject_name}
+      </Text>
       <View
         className="border-t-2 w-full "
         style={{ borderColor: theme.secondaryColor(0.05) }}

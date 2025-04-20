@@ -11,13 +11,16 @@ const Response = ({ subject }) => {
   useFocusEffect(() => {
     const checkStatus = async () => {
       const db = await SQLite.openDatabaseAsync("localStorage");
-      console.log("ycgdcsd");
       const row = await db.getFirstAsync(
-        `SELECT * FROM attendance WHERE subject_id=${subject.id} AND date="10-${currentDate.month}-${currentDate.year}"`
+        `SELECT * FROM attendance WHERE subject_id=${subject.id} AND date="${currentDate.date}-${currentDate.month}-${currentDate.year}"`
       );
       console.log("Row: ", row);
       if (row) {
         setStatus(row.status);
+      } else {
+        await db.execAsync(
+          `INSERT INTO attendance (date, subject_id, status) VALUES ("${currentDate.date}-${currentDate.month}-${currentDate.year}", ${subject.id}, "Not Marked")`
+        );
       }
     };
     checkStatus();
@@ -29,7 +32,7 @@ const Response = ({ subject }) => {
     console.log("Attendance status: ", AttStatus);
     const db = await SQLite.openDatabaseAsync("localStorage");
     await db.execAsync(
-      `INSERT INTO attendance (date, subject_id, status) VALUES ("10-${currentDate.month}-${currentDate.year}", ${subject.id}, "${AttStatus}")`
+      `UPDATE attendance SET status="${AttStatus}" WHERE subject_id=${subject.id} AND date="${currentDate.date}-${currentDate.month}-${currentDate.year}"`
     );
     console.log("Attendance status: ", AttStatus);
     if (AttStatus === "Present") {

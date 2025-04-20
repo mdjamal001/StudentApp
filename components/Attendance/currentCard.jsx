@@ -50,7 +50,7 @@ const CurrentCard = () => {
         </TouchableOpacity>
       </View>
 
-      {currentDate.day === "" || currentDate.day === "Saturday" ? (
+      {currentDate.day === "Sunday" || currentDate.day === "Saturday" ? (
         <View className="h-60 flex-row justify-center items-center">
           <Text className="text-lg text-gray-500">No classes today!</Text>
         </View>

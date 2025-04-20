@@ -1,35 +1,39 @@
+import { View, ActivityIndicator } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Redirect } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect } from "react";
-import { StyleSheet, View, Text } from "react-native";
 import "../global.css";
-import { db_init } from "../LocalStorage/database";
-import * as SQLite from "expo-sqlite";
 
-const Index = () => {
-  const [key, setKey] = React.useState(0);
+export default function Index() {
+  const [hasCheckedStorage, setHasCheckedStorage] = useState(false);
+  const [hasStuData, setHasStuData] = useState(false);
 
   useEffect(() => {
-    const init = async () => {
-      await db_init(); //Initialize the DB
-
-      //print the timetable
-      // const db = await SQLite.openDatabaseAsync("localStorage");
-      // const rows = await db.getAllAsync(
-      //   "SELECT * FROM timetable WHERE semester=4"
-      // );
-      // console.log("Rows: ", rows);
+    const checkStuData = async () => {
+      try {
+        const value = await AsyncStorage.getItem("semester");
+        console.log("Semester value from AsyncStorage:", value);
+        if (value !== null) {
+          setHasStuData(true);
+        }
+      } catch (error) {
+        console.error("AsyncStorage error:", error);
+      } finally {
+        setHasCheckedStorage(true);
+      }
     };
-    init();
+
+    checkStuData();
   }, []);
 
-  return (
-    <View className="flex-row flex-1 justify-center items-center">
-      <StatusBar style="dark" />
-      <Text className="text-3xl">Home Page</Text>
-    </View>
-  );
-};
+  if (!hasCheckedStorage) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
 
-const styles = StyleSheet.create({});
-
-export default Index;
+  return <Redirect href={hasStuData ? "/(tabs)" : "/(auth)/chooseOption"} />;
+}

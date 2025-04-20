@@ -1,40 +1,46 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { Text, View, TouchableNativeFeedback, ScrollView } from "react-native";
 import CircularProgress from "react-native-circular-progress-indicator";
 import { theme } from "../../Theme";
 import { MaterialIcons } from "@expo/vector-icons";
-import { StatusBar } from "expo-status-bar";
-import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 import { useFocusEffect } from "@react-navigation/native";
 import CurrentCard from "../../components/Attendance/currentCard";
 import { useNavigation } from "@react-navigation/native";
 import * as SQLite from "expo-sqlite";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import { useState } from "react";
 
 const PrimaryAttendance = () => {
   const navigation = useNavigation();
 
-  const [attPercent, setAttPercent] = React.useState({});
+  const [attPercent, setAttPercent] = useState(0);
 
-  useFocusEffect(() => {
-    const getAttPercent = async () => {
-      const db = await SQLite.openDatabaseAsync("localStorage");
-      const result = await db.getAllAsync(
-        `SELECT * FROM subjects WHERE semester=4`
-      );
-      let ovr_total_classes = 0;
-      let ovr_attended_classes = 0;
-      result.forEach((subject) => {
-        ovr_total_classes += subject.total_classes;
-        ovr_attended_classes += subject.attended_classes;
-      });
-      let att_percent = Math.round(
-        (ovr_attended_classes / ovr_total_classes) * 100
-      );
-      setAttPercent(att_percent);
-    };
-    getAttPercent();
-  });
+  useFocusEffect(
+    useCallback(() => {
+      const getAttPercent = async () => {
+        const db = await SQLite.openDatabaseAsync("localStorage");
+        const result = await db.getAllAsync(
+          `SELECT * FROM subjects WHERE semester=4`
+        );
+        const res = await db.getAllAsync(`SELECT * FROM attendance`);
+        console.log("Attendance: ", res);
+        let ovr_total_classes = 0;
+        let ovr_attended_classes = 0;
+        result.forEach((subject) => {
+          ovr_total_classes += subject.total_classes;
+          ovr_attended_classes += subject.attended_classes;
+        });
+        if (ovr_total_classes === 0) {
+          setAttPercent(0);
+          return;
+        }
+        let att_percent = Math.round(
+          (ovr_attended_classes / ovr_total_classes) * 100
+        );
+        setAttPercent(att_percent);
+      };
+      getAttPercent();
+    }, [attPercent])
+  );
 
   return (
     <View>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+  Button,
   ScrollView,
   StyleSheet,
   Text,
@@ -14,6 +15,7 @@ import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import * as SQLite from "expo-sqlite";
+import { Link } from "expo-router";
 
 const SubjectWiseList = () => {
   const [subjectsData, setSubjectsData] = useState([]);
@@ -28,7 +30,7 @@ const SubjectWiseList = () => {
       setSubjectsData(result);
     };
     getSubjectsData();
-  });
+  }, [subjectsData]);
 
   return (
     <View>
@@ -61,7 +63,7 @@ const SubjectWiseList = () => {
               >
                 <View className=" flex-row justify-between mx-3  p-2 px-3 bg-white rounded-lg items-center">
                   <Text className="text-xl line-clamp-1 w-10/12">
-                    {subjectData.subject}
+                    {subjectData.subject_name}
                   </Text>
                   <CircularProgress
                     radius={30}
@@ -79,7 +81,9 @@ const SubjectWiseList = () => {
             </Animated.View>
           );
         })}
-        <View className="mb-3" />
+        {/* <View className="mb-20" /> */}
+
+        <View className="h-28 mt-2" />
       </ScrollView>
     </View>
   );
