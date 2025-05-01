@@ -72,9 +72,9 @@ const Layout = () => {
         }}
       />
       <Tabs.Screen
-        name="classroom"
+        name="academics"
         options={{
-          title: "Classroom",
+          title: "Academics",
           tabBarIcon: ({ focused, color }) => (
             <FontAwesome
               name="book"

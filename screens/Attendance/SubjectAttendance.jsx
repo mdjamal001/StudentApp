@@ -191,8 +191,11 @@ const SubjectAttendance = () => {
   };
 
   return (
-    <View>
-      <View className="h-28 bg-white flex-row items-center pt-8 pl-2">
+    <View className="bg-white h-full">
+      <View
+        className="h-28 bg-white flex-row items-center pt-8 pl-2"
+        style={{ elevation: 5 }}
+      >
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <AntDesign name="arrowleft" size={25} color={"black"} />
         </TouchableOpacity>
@@ -235,6 +238,7 @@ const SubjectAttendance = () => {
                   </Text>
                   <View className="flex-row justify-evenly items-center mb-5">
                     <TouchableOpacity
+                      activeOpacity={0.5}
                       onPress={() => {
                         setMarkedStatus({ ...markedStatus, status: "Present" });
                       }}
@@ -258,6 +262,7 @@ const SubjectAttendance = () => {
                       </Text>
                     </TouchableOpacity>
                     <TouchableOpacity
+                      activeOpacity={0.5}
                       onPress={() => {
                         setMarkedStatus({ ...markedStatus, status: "Absent" });
                       }}
@@ -279,6 +284,7 @@ const SubjectAttendance = () => {
                       </Text>
                     </TouchableOpacity>
                     <TouchableOpacity
+                      activeOpacity={0.5}
                       onPress={() => {
                         setMarkedStatus({
                           ...markedStatus,
@@ -312,6 +318,7 @@ const SubjectAttendance = () => {
                 <View className="items-center mb-5">
                   <Text className="text-xl mb-2">No class!</Text>
                   <TouchableOpacity
+                    activeOpacity={0.5}
                     className="p-2 flex-row rounded-md items-center"
                     style={{ backgroundColor: theme.primaryColor(1) }}
                   >
@@ -407,13 +414,9 @@ const SubjectAttendance = () => {
         </Animated.View>
         <Animated.View
           entering={FadeIn.delay(200).duration(800)}
-          className="m-2 mt-0 rounded-lg p-1 bg-white"
+          className="m-2 mt-0 rounded-lg px-1 pb-2 bg-white"
           style={{
-            shadowColor: "black",
-            shadowOffset: { width: 0, height: 0 },
-            shadowOpacity: 0.8,
-            shadowRadius: 6,
-            elevation: 5,
+            elevation: 4,
           }}
         >
           {/* <View className="m-2 mt-0"> */}

@@ -93,6 +93,7 @@ const GuestForm = () => {
       </View>
 
       <TouchableOpacity
+        activeOpacity={0.5}
         onPress={() => router.back()}
         className="p-1.5 rounded-xl absolute top-14 left-5 z-10"
         style={{ backgroundColor: "white" }}
@@ -218,6 +219,7 @@ const GuestForm = () => {
 
         {/* Proceed Button */}
         <TouchableOpacity
+          activeOpacity={0.5}
           className="p-4 items-center rounded-lg mt-3"
           style={{
             backgroundColor: theme.primaryColor(1),

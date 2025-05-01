@@ -14,7 +14,6 @@ const Response = ({ subject }) => {
       const row = await db.getFirstAsync(
         `SELECT * FROM attendance WHERE subject_id=${subject.id} AND date="${currentDate.date}-${currentDate.month}-${currentDate.year}"`
       );
-      console.log("Row: ", row);
       if (row) {
         setStatus(row.status);
       } else {
@@ -29,7 +28,6 @@ const Response = ({ subject }) => {
   const setAttStatus = async (AttStatus) => {
     setStatus(AttStatus);
 
-    console.log("Attendance status: ", AttStatus);
     const db = await SQLite.openDatabaseAsync("localStorage");
     await db.execAsync(
       `UPDATE attendance SET status="${AttStatus}" WHERE subject_id=${subject.id} AND date="${currentDate.date}-${currentDate.month}-${currentDate.year}"`

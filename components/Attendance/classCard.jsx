@@ -21,8 +21,6 @@ const ClassCard = ({ classData }) => {
         `SELECT * FROM subjects WHERE id=${classData.subject_id}`
       );
 
-      console.log("Subject Data: ", result);
-
       setSubjectData(result);
     };
 

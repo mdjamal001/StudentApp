@@ -33,8 +33,11 @@ const SubjectWiseList = () => {
   }, [subjectsData]);
 
   return (
-    <View>
-      <View className="h-28 bg-white flex-row items-center pt-8 pl-2">
+    <View className="bg-white">
+      <View
+        className="h-28 bg-white flex-row items-center pt-8 pl-2"
+        style={{ elevation: 5 }}
+      >
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <AntDesign name="arrowleft" size={25} color={"black"} />
         </TouchableOpacity>
@@ -48,15 +51,12 @@ const SubjectWiseList = () => {
               key={index}
               className="mt-3 mx-2 bg-white rounded-lg items-center"
               style={{
-                shadowColor: "black",
-                shadowOffset: { width: 0, height: 0 },
-                shadowOpacity: 0.8,
-                shadowRadius: 6,
-                elevation: 6,
+                elevation: 5,
               }}
             >
               {/* <View key={index}> */}
               <TouchableOpacity
+                activeOpacity={0.5}
                 onPress={() =>
                   navigation.navigate("Subject Attendance", { ...subjectData })
                 }

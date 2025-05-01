@@ -1,5 +1,11 @@
 import React, { useCallback } from "react";
-import { Text, View, TouchableNativeFeedback, ScrollView } from "react-native";
+import {
+  Text,
+  View,
+  TouchableNativeFeedback,
+  ScrollView,
+  Modal,
+} from "react-native";
 import CircularProgress from "react-native-circular-progress-indicator";
 import { theme } from "../../Theme";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -8,21 +14,23 @@ import CurrentCard from "../../components/Attendance/currentCard";
 import { useNavigation } from "@react-navigation/native";
 import * as SQLite from "expo-sqlite";
 import { useState } from "react";
+import LottieView from "lottie-react-native";
 
 const PrimaryAttendance = () => {
   const navigation = useNavigation();
 
   const [attPercent, setAttPercent] = useState(0);
+  const [showLoader, setShowLoader] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
+      setShowLoader(true);
       const getAttPercent = async () => {
         const db = await SQLite.openDatabaseAsync("localStorage");
         const result = await db.getAllAsync(
           `SELECT * FROM subjects WHERE semester=4`
         );
         const res = await db.getAllAsync(`SELECT * FROM attendance`);
-        console.log("Attendance: ", res);
         let ovr_total_classes = 0;
         let ovr_attended_classes = 0;
         result.forEach((subject) => {
@@ -39,15 +47,35 @@ const PrimaryAttendance = () => {
         setAttPercent(att_percent);
       };
       getAttPercent();
+      setTimeout(() => {
+        setShowLoader(false);
+      }, 1000);
     }, [attPercent])
   );
 
+  if (showLoader) {
+    return (
+      <View className="flex-1 justify-center items-center">
+        <LottieView
+          source={require("../../assets/animations/loadingAnimation.json")}
+          autoPlay
+          loop
+          style={{ height: 80, width: 80 }}
+        />
+      </View>
+    );
+  }
+
   return (
-    <View>
-      <View className="h-28 bg-white flex-row items-center pt-8 pl-2">
+    <View className="bg-white flex-1">
+      <View
+        className="h-28 bg-white flex-row items-center pt-8 pl-2"
+        style={{ elevation: 8 }}
+      >
         <Text className="text-2xl  ml-5">Attendance</Text>
       </View>
-      <ScrollView showsVerticalScrollIndicator={false} className="h-full">
+
+      <ScrollView showsVerticalScrollIndicator={false} className="flex-1">
         <View
           className="bg-white m-3 pt-3 rounded-lg"
           style={{

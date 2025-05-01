@@ -28,11 +28,7 @@ const CurrentCard = () => {
     <View
       className="mx-3 p-3 bg-white rounded-lg"
       style={{
-        shadowColor: "black",
-        shadowOffset: { width: 0, height: 5 },
-        shadowOpacity: 0.8,
-        shadowRadius: 6,
-        elevation: 6,
+        elevation: 4,
       }}
     >
       <View className="flex-row justify-between mb-8">
@@ -40,7 +36,7 @@ const CurrentCard = () => {
           {currentDate.day}, {currentDate.date} {currentDate.month}{" "}
           {currentDate.year} {currentDate.time}
         </Text>
-        <TouchableOpacity>
+        <TouchableOpacity activeOpacity={0.5}>
           <EvilIcons
             className="me-3"
             name="calendar"

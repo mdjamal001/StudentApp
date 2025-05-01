@@ -29,11 +29,11 @@ export default function Index() {
 
   if (!hasCheckedStorage) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <View className="flex-1 justify-center items-center bg-white">
         <ActivityIndicator size="large" />
       </View>
     );
   }
 
-  return <Redirect href={hasStuData ? "/(tabs)" : "/(auth)/chooseOption"} />;
+  return <Redirect href={hasStuData ? "/(tabs)" : "/(auth)"} />;
 }
