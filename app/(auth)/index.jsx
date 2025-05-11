@@ -40,7 +40,7 @@ const Index = () => {
             activeOpacity={0.75}
             className="p-3 px-6 rounded-xl flex-row items-center gap-x-2"
             style={{ borderWidth: 2, borderColor: theme.primaryColor(1) }}
-            onPress={() => router.push("/(auth)/signIn")}
+            onPress={() => router.push("/signIn")}
           >
             <Text
               className="text-2xl font-semibold"
@@ -59,7 +59,7 @@ const Index = () => {
             activeOpacity={0.75}
             className="p-3 px-6 rounded-xl flex-row items-center gap-x-2"
             style={{ backgroundColor: theme.primaryColor(1) }}
-            onPress={() => router.push("/(auth)/signUp")}
+            onPress={() => router.push("/signUp")}
           >
             <Text className="text-2xl font-semibold" style={{ color: "white" }}>
               Signup to continue
@@ -75,7 +75,7 @@ const Index = () => {
             activeOpacity={0.75}
             className="p-3 px-6 rounded-xl flex-row items-center gap-x-2"
             style={{ backgroundColor: "orange" }}
-            onPress={() => router.push("/(auth)/guestForm")}
+            onPress={() => router.push("/guestForm")}
           >
             <Text className="text-2xl font-semibold" style={{ color: "white" }}>
               Continue as guest

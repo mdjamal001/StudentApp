@@ -62,7 +62,7 @@ const GuestForm = () => {
       await db_init();
 
       setShowModal(false);
-      router.push("/(tabs)");
+      router.replace("/(tabs)");
     } catch (e) {
       console.log("Error: ", e);
     }
