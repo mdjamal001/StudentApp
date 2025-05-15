@@ -1,81 +1,137 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Linking, StyleSheet, Text, View } from "react-native";
 import { theme } from "../../Theme";
 import LottieView from "lottie-react-native";
 import { StatusBar } from "expo-status-bar";
 import { supabase } from "../../utils/supabase";
+import { useRouter } from "expo-router";
+import queryString from "query-string";
 
-const ConfirmEmail = () => {
-  async function handleDeepLink(event) {
-    const url = event.url;
-    console.log("Deep link received:", url);
+const confirmEmail = () => {
+  const [showHourglass, setShowHourglass] = useState(true);
+  const [debugText, setDebugText] = useState("waitng for deep link...");
 
-    const parsed = queryString.parseUrl(url);
-    const { access_token, refresh_token } = parsed.query;
+  const router = useRouter();
 
-    if (access_token && refresh_token) {
-      console.log(
-        "Access and Refresh tokens received:",
-        access_token,
-        refresh_token
-      );
+  // async function handleDeepLink(event) {
+  //   const url = event.url;
+  //   console.log("Deep link received:", url);
 
-      const { data, error } = await supabase.auth.setSession({
-        access_token,
-        refresh_token,
-      });
+  //   setDebugText("Deep link received: " + url);
 
-      if (error) {
-        console.error("Setting session failed:", error.message);
-      } else {
-        console.log("Session set successfully!");
+  //   const queryIndex = url.indexOf("?");
+  //   if (queryIndex === -1) {
+  //     setDebugText("No query string found in URL.");
+  //     return;
+  //   }
 
-        // Save session locally
-        try {
-          await AsyncStorage.setItem(
-            "user_session",
-            JSON.stringify(data.session)
-          );
-          console.log("Session saved locally!");
-        } catch (e) {
-          console.error("Failed to save session:", e);
-        }
-      }
-    } else {
-      console.log("No tokens found in URL.");
-    }
-  }
+  //   const query = url.slice(queryIndex + 1);
+  //   const parsed = queryString.parse(query);
+  //   const { access_token, refresh_token } = parsed;
 
-  useEffect(() => {
-    const linkingListener = Linking.addEventListener("url", handleDeepLink);
+  //   if (access_token && refresh_token) {
+  //     console.log(
+  //       "Access and Refresh tokens received:",
+  //       access_token,
+  //       refresh_token
+  //     );
+  //     setDebugText("Access and Refresh tokens received");
 
-    return () => {
-      linkingListener.remove();
-    };
-  }, []);
+  //     const { data, error } = await supabase.auth.setSession({
+  //       access_token,
+  //       refresh_token,
+  //     });
 
-  return (
-    <View className="flex-1 justify-center items-center bg-white pb-28">
-      <StatusBar style="dark" />
-      <View className="mb-8">
-        <LottieView
-          source={require("../../assets/animations/waitingAnimation.json")}
-          loop
-          autoPlay
-          style={{ height: 125, width: 125 }}
-        />
+  //     if (error) {
+  //       console.error("Setting session failed:", error.message);
+  //     } else {
+  //       console.log("Session set successfully!");
+
+  //       setDebugText("Supabse session set successfully!");
+
+  //       // Save session locally
+  //       try {
+  //         await AsyncStorage.setItem(
+  //           "user_session",
+  //           JSON.stringify(data.session)
+  //         );
+
+  //         console.log("Session saved locally!");
+  //         const sessionData = await AsyncStorage.getItem("user_session");
+  //         console.log("Session data:", sessionData);
+
+  //         setDebugText("Session saved locally!");
+
+  //         setShowHourglass(false);
+  //       } catch (e) {
+  //         setDebugText("Failed to save session locally!");
+  //         console.error("Failed to save session:", e);
+  //       }
+  //     }
+  //   } else {
+  //     setDebugText("No tokens found in URL.");
+  //     console.log("No tokens found in URL.");
+  //   }
+  // }
+
+  // useEffect(() => {
+  //   const linkingListener = Linking.addEventListener("url", handleDeepLink);
+
+  //   return () => {
+  //     linkingListener.remove();
+  //   };
+  // }, []);
+
+  if (showHourglass) {
+    return (
+      <View className="flex-1 justify-center items-center bg-white pb-28">
+        <View className="mb-8">
+          <LottieView
+            source={require("../../assets/animations/waitingAnimation.json")}
+            loop
+            autoPlay
+            style={{ height: 125, width: 125 }}
+          />
+        </View>
+        <Text
+          className="text-2xl font-bold"
+          style={{ color: theme.primaryColor(1) }}
+        >
+          Check your mailbox!
+        </Text>
+        <Text className="mt-8">
+          We've sent you a mail to confirm your email
+        </Text>
+        <Text className="mt-8">
+          showHourGlass: {showHourglass ? "true" : "false"}
+        </Text>
+        <Text className="mt-8">Debug text: {debugText}</Text>
       </View>
-      <Text
-        className="text-2xl font-bold"
-        style={{ color: theme.primaryColor(1) }}
-      >
-        Check your mailbox!
-      </Text>
-      <Text className="mt-8">We've sent you a mail to confirm your email</Text>
-    </View>
-  );
+    );
+  } else {
+    return (
+      <View className="flex-1 justify-center items-center bg-white pb-28">
+        <View className="mb-8">
+          <LottieView
+            source={require("../../assets/animations/successAnimation.json")}
+            autoPlay
+            loop={false}
+            onAnimationFinish={() => {
+              setTimeout(() => {
+                router.replace("/currentDetails");
+              }, 2000);
+            }}
+            style={{ height: 250, width: 250 }}
+          />
+        </View>
+        <Text className="text-3xl font-bold" style={{ color: "#15bf5f" }}>
+          Email verified!
+        </Text>
+      </View>
+    );
+  }
 };
 
 const styles = StyleSheet.create({});
 
-export default ConfirmEmail;
+export default confirmEmail;

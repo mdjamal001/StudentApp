@@ -22,7 +22,7 @@ import LottieView from "lottie-react-native";
 import { db_init } from "../../LocalStorage/database";
 import { supabase } from "../../utils/supabase";
 
-const SignUp = () => {
+const signUp = () => {
   const router = useRouter();
 
   const [showModal, setShowModal] = useState(false);
@@ -248,4 +248,4 @@ const SignUp = () => {
 
 const styles = StyleSheet.create({});
 
-export default SignUp;
+export default signUp;

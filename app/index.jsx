@@ -4,6 +4,7 @@ import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StatusBar } from "expo-status-bar";
 import "../global.css";
+import "react-native-gesture-handler";
 
 export default function Index() {
   const [isLoading, setIsLoading] = useState(true);
@@ -12,8 +13,7 @@ export default function Index() {
   useEffect(() => {
     const checkStuData = async () => {
       try {
-        const value = await AsyncStorage.getItem("semester");
-        console.log("Semester value from AsyncStorage:", value);
+        const value = await AsyncStorage.getItem("user_session");
         if (value !== null) {
           router.replace("/(tabs)");
         } else {

@@ -17,7 +17,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import LottieView from "lottie-react-native";
 import { db_init } from "../../LocalStorage/database";
 
-const GuestForm = () => {
+const guestForm = () => {
   const router = useRouter();
 
   const [showModal, setShowModal] = useState(false);
@@ -235,4 +235,4 @@ const GuestForm = () => {
   );
 };
 
-export default GuestForm;
+export default guestForm;

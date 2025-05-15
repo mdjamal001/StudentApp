@@ -18,8 +18,9 @@ import Animated, {
 } from "react-native-reanimated";
 import LottieView from "lottie-react-native";
 import { supabase } from "../../utils/supabase";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const SignIn = () => {
+const signIn = () => {
   const router = useRouter();
 
   const [showModal, setShowModal] = useState(false);
@@ -43,6 +44,11 @@ const SignIn = () => {
       });
 
       console.log("SignIn Response: ", respose);
+
+      await AsyncStorage.setItem(
+        "user_session",
+        JSON.stringify(respose.data.session)
+      );
 
       setShowModal(false);
       if (respose.error) {
@@ -177,4 +183,4 @@ const SignIn = () => {
 
 const styles = StyleSheet.create({});
 
-export default SignIn;
+export default signIn;

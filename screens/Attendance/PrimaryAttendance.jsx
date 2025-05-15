@@ -47,24 +47,8 @@ const PrimaryAttendance = () => {
         setAttPercent(att_percent);
       };
       getAttPercent();
-      setTimeout(() => {
-        setShowLoader(false);
-      }, 1000);
     }, [attPercent])
   );
-
-  if (showLoader) {
-    return (
-      <View className="flex-1 justify-center items-center">
-        <LottieView
-          source={require("../../assets/animations/loadingAnimation.json")}
-          autoPlay
-          loop
-          style={{ height: 80, width: 80 }}
-        />
-      </View>
-    );
-  }
 
   return (
     <View className="bg-white flex-1">

@@ -9,13 +9,13 @@ import {
 import { useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SQLite from "expo-sqlite";
-// import { useRouter } from "expo-router";
-import { router } from "expo-router";
+import { useRouter } from "expo-router";
 import { useSubject } from "../../utils/SubjectContext";
+import "react-native-gesture-handler";
 // import CircularProgress from "react-native-circular-progress-indicator";
 
 const Academics = () => {
-  // const router = useRouter();
+  const router = useRouter();
 
   const { setSelectedSubject } = useSubject();
 
@@ -67,7 +67,7 @@ const Academics = () => {
                   <TouchableOpacity
                     onPress={() => {
                       setSelectedSubject(subject.subject_name);
-                      router.push("(acadTabs)");
+                      router.push("/(acadTabs)");
                     }}
                   >
                     <Text className="text-xl line-clamp-1 p-6">

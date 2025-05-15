@@ -11,9 +11,9 @@ const Syllabus = () => {
     <View className="bg-white flex-1">
       <View
         className="h-28 bg-white flex-row items-center pt-8 pl-2"
-        style={{ elevation: 8 }}
+        style={{ elevation: 3 }}
       >
-        <TouchableOpacity onPress={() => router.replace("../academics")}>
+        <TouchableOpacity onPress={() => router.replace("/(tabs)/academics")}>
           <AntDesign name="arrowleft" size={25} color={"black"} />
         </TouchableOpacity>
         <Text className="text-2xl  ml-5 line-clamp-1">

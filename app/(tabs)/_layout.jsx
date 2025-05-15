@@ -9,38 +9,10 @@ import {
   FontAwesome6,
 } from "@expo/vector-icons";
 import { theme } from "../../Theme";
+import "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-// import InitialNavigation from "./InitialNavigation";
-// import InitialNavigation from "../../Navigation/InitialNavigation";
 
 const Layout = () => {
-  // NavigationBar.setBorderColorAsync("#eeeeee");
-
-  // const [hasStuData, setHasStuData] = useState(false);
-
-  // useEffect(() => {
-  //   const checkStuData = async () => {
-  //     try {
-  //       await AsyncStorage.removeItem("semester");
-  //       const value = await AsyncStorage.getItem("semester");
-  //       if (value != null) {
-  //         setHasStuData(true);
-  //       } else {
-  //         setHasStuData(false);
-  //       }
-  //     } catch (e) {
-  //       console.log("Error: ", e);
-  //       setHasStuData(false);
-  //     }
-  //   };
-  //   checkStuData();
-  // });
-
-  // if (!hasStuData) {
-  //   return <InitialNavigation />;
-  // }
-
   return (
     <Tabs
       screenOptions={{

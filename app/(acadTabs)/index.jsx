@@ -11,7 +11,7 @@ const Index = () => {
     <View className="bg-white flex-1">
       <View
         className="h-28 bg-white flex-row items-center pt-8 pl-2"
-        style={{ elevation: 8 }}
+        style={{ elevation: 3 }}
       >
         <TouchableOpacity onPress={() => router.back()}>
           <AntDesign name="arrowleft" size={25} color={"black"} />

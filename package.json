@@ -46,6 +46,7 @@
     "lottie-react-native": "7.1.0",
     "merge-options": "^3.0.4",
     "nativewind": "^4.1.23",
+    "query-string": "^9.1.2",
     "react": "18.3.1",
     "react-helmet-async": "^2.0.5",
     "react-native": "0.76.9",

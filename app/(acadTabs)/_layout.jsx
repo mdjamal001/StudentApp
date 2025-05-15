@@ -1,12 +1,8 @@
-import {
-  Ionicons,
-  MaterialCommunityIcons,
-  MaterialIcons,
-} from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import React from "react";
-import { StyleSheet, View } from "react-native";
 import { theme } from "../../Theme";
+import "react-native-gesture-handler";
 
 const Layout = () => {
   return (
@@ -59,7 +55,5 @@ const Layout = () => {
     </Tabs>
   );
 };
-
-const styles = StyleSheet.create({});
 
 export default Layout;

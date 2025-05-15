@@ -3,6 +3,7 @@ import React from "react";
 import { Stack } from "expo-router";
 import * as NavigationBar from "expo-navigation-bar";
 import { SubjectProvider } from "../utils/SubjectContext";
+import "react-native-gesture-handler";
 
 export default function _layout() {
   NavigationBar.setBackgroundColorAsync("white");
