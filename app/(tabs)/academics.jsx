@@ -59,22 +59,20 @@ const Academics = () => {
           <ScrollView className="mt-1" showsVerticalScrollIndicator={false}>
             {subjects.map((subject, index) => {
               return (
-                <View
+                <TouchableOpacity
                   className="m-1 mx-1.5 bg-white rounded-lg"
                   style={{ elevation: 5 }}
                   key={index}
+                  onPress={() => {
+                    setSelectedSubject(subject.subject_name);
+                    router.push("/(acadTabs)/");
+                  }}
+                  activeOpacity={0.8}
                 >
-                  <TouchableOpacity
-                    onPress={() => {
-                      setSelectedSubject(subject.subject_name);
-                      router.push("(acadTabs)");
-                    }}
-                  >
-                    <Text className="text-xl line-clamp-1 p-6">
-                      {subject.subject_name}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
+                  <Text className="text-xl line-clamp-1 p-6">
+                    {subject.subject_name}
+                  </Text>
+                </TouchableOpacity>
               );
             })}
             <View className="h-28" />

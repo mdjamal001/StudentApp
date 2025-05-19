@@ -18,6 +18,7 @@ import Animated, {
 } from "react-native-reanimated";
 import LottieView from "lottie-react-native";
 import { supabase } from "../../utils/supabase";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const SignIn = () => {
   const router = useRouter();
@@ -42,7 +43,11 @@ const SignIn = () => {
         password: password,
       });
 
-      console.log("SignIn Response: ", respose);
+      await AsyncStorage.setItem(
+        "user_session",
+        JSON.stringify(respose.data.session)
+      );
+      console.log("Session saved locally!");
 
       setShowModal(false);
       if (respose.error) {

@@ -20,11 +20,9 @@ const PrimaryAttendance = () => {
   const navigation = useNavigation();
 
   const [attPercent, setAttPercent] = useState(0);
-  const [showLoader, setShowLoader] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
-      setShowLoader(true);
       const getAttPercent = async () => {
         const db = await SQLite.openDatabaseAsync("localStorage");
         const result = await db.getAllAsync(
@@ -47,24 +45,8 @@ const PrimaryAttendance = () => {
         setAttPercent(att_percent);
       };
       getAttPercent();
-      setTimeout(() => {
-        setShowLoader(false);
-      }, 1000);
     }, [attPercent])
   );
-
-  if (showLoader) {
-    return (
-      <View className="flex-1 justify-center items-center">
-        <LottieView
-          source={require("../../assets/animations/loadingAnimation.json")}
-          autoPlay
-          loop
-          style={{ height: 80, width: 80 }}
-        />
-      </View>
-    );
-  }
 
   return (
     <View className="bg-white flex-1">

@@ -1,11 +1,11 @@
 import { AntDesign } from "@expo/vector-icons";
-import { router, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { useSubject } from "../../utils/SubjectContext";
 
-const Index = () => {
-  const { selectedAcademicSubject } = useSubject();
+const Resources = () => {
+  const params = useLocalSearchParams();
+  const router = useRouter();
 
   return (
     <View className="bg-white flex-1">
@@ -16,12 +16,11 @@ const Index = () => {
         <TouchableOpacity onPress={() => router.back()}>
           <AntDesign name="arrowleft" size={25} color={"black"} />
         </TouchableOpacity>
-        <Text className="text-2xl  ml-5 line-clamp-1">
-          {selectedAcademicSubject}
+        <Text className="text-sm ml-3 mr-5 mb-5 line-clamp-1">
+          {params.subject}
+          {" > "}
+          {params.type}
         </Text>
-      </View>
-      <View className="flex-1 justify-center items-center">
-        <Text>Resources Page</Text>
       </View>
     </View>
   );
@@ -29,4 +28,4 @@ const Index = () => {
 
 const styles = StyleSheet.create({});
 
-export default Index;
+export default Resources;
