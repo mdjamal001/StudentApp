@@ -131,7 +131,7 @@ const GuestForm = () => {
               placeholderTextColor={theme.secondaryColor(0.25)}
               onChangeText={setName}
               value={name}
-              className="text-lg"
+              className="text-lg line-clamp-1"
               cursorColor={theme.primaryColor(1)}
             />
           </View>

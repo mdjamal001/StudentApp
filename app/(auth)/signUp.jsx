@@ -85,6 +85,8 @@ const SignUp = () => {
       }
 
       setShowModal(false);
+      await AsyncStorage.setItem("user_id", user_id);
+      await AsyncStorage.setItem("name", name);
       router.push("/confirmEmail");
     } catch (e) {
       console.log("Error: ", e);
@@ -154,7 +156,7 @@ const SignUp = () => {
               placeholderTextColor={theme.secondaryColor(0.25)}
               onChangeText={setName}
               value={name}
-              className="text-lg"
+              className="text-lg line-clamp-1"
               cursorColor={theme.primaryColor(1)}
             />
           </View>
@@ -190,7 +192,7 @@ const SignUp = () => {
               placeholderTextColor={theme.secondaryColor(0.25)}
               onChangeText={setEmail}
               value={email}
-              className="text-lg"
+              className="text-lg line-clamp-1"
               cursorColor={theme.primaryColor(1)}
             />
           </View>

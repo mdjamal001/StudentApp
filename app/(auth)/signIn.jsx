@@ -47,13 +47,21 @@ const SignIn = () => {
         "user_session",
         JSON.stringify(respose.data.session)
       );
-      console.log("Session saved locally!");
+      console.log("Session saved locally!", respose.data);
 
       setShowModal(false);
       if (respose.error) {
         alert(respose.error.message);
         return;
       }
+      const user_id = respose.data.user.id;
+      const name = await supabase
+        .from("users")
+        .select("name")
+        .eq("user_id", user_id);
+      console.log(name);
+      await AsyncStorage.setItem("name", name.data[0].name);
+
       router.push("/currentDetails");
     } catch (e) {
       console.log("Error: ", e);
@@ -125,7 +133,7 @@ const SignIn = () => {
               placeholderTextColor={theme.secondaryColor(0.25)}
               onChangeText={setEmail}
               value={email}
-              className="text-lg"
+              className="text-lg line-clamp-1"
               cursorColor={theme.primaryColor(1)}
             />
           </View>
