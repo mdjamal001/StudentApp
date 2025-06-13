@@ -2,13 +2,12 @@ import {
   AntDesign,
   Entypo,
   FontAwesome,
-  FontAwesome5,
   FontAwesome6,
   MaterialCommunityIcons,
   MaterialIcons,
 } from "@expo/vector-icons";
-import { router, useLocalSearchParams, useRouter } from "expo-router";
-import React, { useState } from "react";
+import { useRouter } from "expo-router";
+import  { useState,useLayoutEffect } from "react";
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSubject } from "../../../utils/SubjectContext";
 import { theme } from "../../../Theme";
@@ -18,18 +17,14 @@ import AddDocForm from "../../../components/Academics/AddDocForm";
 const Index = () => {
   const { selectedAcademicSubject } = useSubject();
   const router = useRouter();
-
   const [showAddDocForm, setShowAddDocForm] = useState(false);
-
-  const categories = [{ name: "Documents", icon: "" }];
-
   return (
     <View className="bg-white flex-1">
       <View
         className="h-28 bg-white flex-row items-center pt-8 pl-2"
         style={{ elevation: 8 }}
       >
-        <TouchableOpacity onPress={() => router.back()}>
+        <TouchableOpacity onPress={() => router.replace('../academics')}>
           <AntDesign name="arrowleft" size={25} color={"black"} />
         </TouchableOpacity>
         <Text className="text-2xl  ml-5 line-clamp-1">
@@ -42,7 +37,7 @@ const Index = () => {
           <TouchableOpacity
             onPress={() => {
               router.push({
-                pathname: "/resources",
+                pathname: "Index/resources",
                 params: { type: "Documents", subject: selectedAcademicSubject },
               });
             }}
@@ -70,7 +65,7 @@ const Index = () => {
           <TouchableOpacity
             onPress={() => {
               router.push({
-                pathname: "/resources",
+                pathname: "Index/resources",
                 params: {
                   type: "Youtube Links",
                   subject: selectedAcademicSubject,
@@ -97,7 +92,7 @@ const Index = () => {
           <TouchableOpacity
             onPress={() => {
               router.push({
-                pathname: "/resources",
+                pathname: "Index/resources",
                 params: {
                   type: "Classroom Notes",
                   subject: selectedAcademicSubject,
@@ -128,7 +123,7 @@ const Index = () => {
           <TouchableOpacity
             onPress={() => {
               router.push({
-                pathname: "/resources",
+                pathname: "Index/resources",
                 params: { type: "Textbooks", subject: selectedAcademicSubject },
               });
             }}
@@ -152,7 +147,7 @@ const Index = () => {
           <TouchableOpacity
             onPress={() => {
               router.push({
-                pathname: "/resources",
+                pathname: "Index/resources",
                 params: { type: "Websites", subject: selectedAcademicSubject },
               });
             }}
@@ -180,7 +175,7 @@ const Index = () => {
           <TouchableOpacity
             onPress={() => {
               router.push({
-                pathname: "/resources",
+                pathname: "Index/resources",
                 params: {
                   type: "Question Papers (prev)",
                   subject: selectedAcademicSubject,
@@ -211,7 +206,7 @@ const Index = () => {
           <TouchableOpacity
             onPress={() => {
               router.push({
-                pathname: "/resources",
+                pathname: "Index/resources",
                 params: {
                   type: "Other Resources",
                   subject: selectedAcademicSubject,

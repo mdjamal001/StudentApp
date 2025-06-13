@@ -12,12 +12,14 @@ import * as SQLite from "expo-sqlite";
 // import { useRouter } from "expo-router";
 import { router } from "expo-router";
 import { useSubject } from "../../utils/SubjectContext";
+import { useSId } from "../../utils/SIdContext";
 // import CircularProgress from "react-native-circular-progress-indicator";
 
 const Academics = () => {
   // const router = useRouter();
 
   const { setSelectedSubject } = useSubject();
+  const { setSelectedId } = useSId();
 
   const [sem, setsem] = useState(null);
   const [subjects, setSubjects] = useState([]);
@@ -34,7 +36,7 @@ const Academics = () => {
       const getSubjects = async () => {
         const db = await SQLite.openDatabaseAsync("localStorage");
         const res = await db.getAllAsync(
-          `SELECT subject_name FROM subjects WHERE semester=${sem}`
+          `SELECT subject_name , id FROM subjects WHERE semester=${sem}`
         );
         // console.log(res);
 
@@ -65,7 +67,8 @@ const Academics = () => {
                   key={index}
                   onPress={() => {
                     setSelectedSubject(subject.subject_name);
-                    router.push("/(acadTabs)/");
+                    setSelectedId(subject.id);
+                    router.replace("/(acadTabs)/Index");
                   }}
                   activeOpacity={0.8}
                 >

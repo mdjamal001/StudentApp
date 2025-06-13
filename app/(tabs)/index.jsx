@@ -1,13 +1,14 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { StyleSheet, View, Text, Button } from "react-native";
+import {useLocalSearchParams,useRouter } from "expo-router";
+import { useFocusEffect } from "@react-navigation/native";
 import { db_init } from "../../LocalStorage/database";
 import * as SQLite from "expo-sqlite";
 import { Link } from "expo-router";
 
 const Index = () => {
   const [key, setKey] = React.useState(0);
-
   // useEffect(() => {
   //   const init = async () => {
   //     await db_init(); //Initialize the DB

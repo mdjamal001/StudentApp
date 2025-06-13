@@ -1,11 +1,9 @@
 import {
   Ionicons,
-  MaterialCommunityIcons,
   MaterialIcons,
 } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
-import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet} from "react-native";
 import { theme } from "../../Theme";
 
 const Layout = () => {
@@ -16,9 +14,9 @@ const Layout = () => {
         tabBarActiveTintColor: theme.primaryColor(1),
         tabBarInactiveTintColor: "gray",
       }}
-    >
+    > 
       <Tabs.Screen
-        name="index"
+        name="Index"
         options={{
           title: "Resources",
           tabBarIcon: ({ focused, color }) => (
@@ -31,7 +29,7 @@ const Layout = () => {
         }}
       />
       <Tabs.Screen
-        name="syllabus"
+        name="Syllabus"
         options={{
           title: "Syllabus",
           tabBarIcon: ({ focused, color }) => (

@@ -6,7 +6,7 @@ const Layout = () => {
   return (
     <Stack>
       <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="resources" options={{ headerShown: false }} />
+      <Stack.Screen name="showSyll" options={{ headerShown: false }} />
     </Stack>
   );
 };

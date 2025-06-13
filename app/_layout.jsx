@@ -3,6 +3,7 @@ import React from "react";
 import { Stack } from "expo-router";
 import * as NavigationBar from "expo-navigation-bar";
 import { SubjectProvider } from "../utils/SubjectContext";
+import { SIdProvider } from "../utils/SIdContext";
 
 export default function _layout() {
   NavigationBar.setBackgroundColorAsync("white");
@@ -10,7 +11,9 @@ export default function _layout() {
 
   return (
     <SubjectProvider>
-      <Stack screenOptions={{ headerShown: false }}></Stack>
+      <SIdProvider>
+        <Stack screenOptions={{ headerShown: false }}></Stack>
+      </SIdProvider>
     </SubjectProvider>
   );
 }

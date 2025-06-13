@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import * as SQLite from "expo-sqlite";
+import { supabase } from "../utils/supabase";
 
 export const db_init = async () => {
   const weekdays = {
@@ -21,7 +22,9 @@ export const db_init = async () => {
 
   await db.execAsync(`DROP TABLE IF EXISTS attendance`);
   await db.execAsync(`DROP TABLE IF EXISTS timetable`);
+  await db.execAsync(`DROP TABLE IF EXISTS syllabus`);
   await db.execAsync(`DROP TABLE IF EXISTS subjects`);
+  
 
   await db.execAsync(`
     CREATE TABLE subjects (
@@ -55,23 +58,58 @@ export const db_init = async () => {
       FOREIGN KEY (subject_id) REFERENCES subjects(id)
     )`
   );
-
+  await db.execAsync(
+    `CREATE TABLE syllabus (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      unit INTEGER,
+      Etype TEXT,
+      subject_id INTEGER,
+      topic TEXT,
+      status BOOLEAN DEFAULT false,
+      FOREIGN KEY (subject_id) REFERENCES subjects(id)
+    )`
+  );
   //Make an API call to fetch data of timetable and subjects
-  const timetable = (
-    await axios.get(
-      `https://attendanceapi-production-a2d1.up.railway.app/api/timetable?branch=${branch}&semester=${semester} `
-    )
-  ).data;
-  const subjects = (
-    await axios.get(
-      `https://attendanceapi-production-a2d1.up.railway.app/api/subjects?branch=${branch}&semester=${semester}`
-    )
-  ).data;
-
+  const {data:timetable,error:er} = 
+    await supabase.from('timetable').select('*').eq('semester',parseInt(semester)).eq('branch',branch);
+  if(er){
+    console.log("error : "+er);
+  }
+   const {data:syllabus,error:err} = 
+    await supabase.from('syllabus').select('*').eq('semester',parseInt(semester)).eq('branch',branch);
+  if(err){
+    console.log("error : "+err);
+  }
+  
+  
+  //Make an API call to fetch data of timetable and subjects
+  const { data:subjects, error } = await supabase.rpc('get_subjects_by_branch_semester', {
+  input_branch: branch,
+  input_semester: parseInt(semester)
+  });
+  if(error){
+    console.log("error: "+error.message);
+  }
+  
   for (let subject of subjects) {
     await db.execAsync(
       `INSERT INTO subjects (id, subject_name, attendance_percent, semester, total_classes, attended_classes) VALUES (${subject.subject_id}, "${subject.subject_name}", 0, ${semester}, 0, 0)`
     );
+  }
+  for (let syll of syllabus) {
+    for(let ex in syll){
+        if(ex=="mid1"||ex=="mid2"||ex=="sem"){
+            for(let ele of syll[ex]){
+                const {topics,unitNumber} =ele;
+                for(let ent of topics){
+                  await db.execAsync(
+                  `INSERT INTO syllabus (unit, Etype, subject_id, topic) VALUES (${unitNumber}, "${ex}", ${syll.subject_id}, "${ent}")`
+                  );
+                }
+           }
+         }
+           
+    }
   }
 
   for (let classData of timetable) {
@@ -86,6 +124,8 @@ export const db_init = async () => {
 
   const timetableData = await db.getAllAsync(`SELECT * FROM timetable`);
   const subjectData = await db.getAllAsync(`SELECT * FROM subjects`);
+  const syllData = await db.getAllAsync(`SELECT * FROM syllabus`);
+
 
   timetableData.forEach((classData) => {
     console.log(classData);
@@ -93,4 +133,8 @@ export const db_init = async () => {
   subjectData.forEach((subject) => {
     console.log(subject);
   });
+  syllData.forEach((syll) => {
+    console.log(syll);
+  });
+  
 };
