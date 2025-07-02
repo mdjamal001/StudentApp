@@ -56,6 +56,7 @@ const GuestForm = () => {
       await AsyncStorage.setItem("degreeType", degreetype);
       await AsyncStorage.setItem("branch", branch);
       await AsyncStorage.setItem("semester", semester.toString());
+      await AsyncStorage.setItem("user_session",name+degreetype);
 
       setShowModal(true);
 
