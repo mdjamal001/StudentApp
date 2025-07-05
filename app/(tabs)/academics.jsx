@@ -13,6 +13,7 @@ import * as SQLite from "expo-sqlite";
 import { router } from "expo-router";
 import { useSubject } from "../../utils/SubjectContext";
 import { useSId } from "../../utils/SIdContext";
+import { StatusBar } from "expo-status-bar";
 // import CircularProgress from "react-native-circular-progress-indicator";
 
 const Academics = () => {
@@ -50,6 +51,7 @@ const Academics = () => {
 
   return (
     <View className="bg-white flex-1">
+      <StatusBar style="dark" />
       <View
         className="h-28 bg-white flex-row items-center pt-8 pl-2"
         style={{ elevation: 8 }}
@@ -68,7 +70,7 @@ const Academics = () => {
                   onPress={() => {
                     setSelectedSubject(subject.subject_name);
                     setSelectedId(subject.id);
-                    router.replace("/(acadTabs)/Index");
+                    router.replace("/(acadTabs)");
                   }}
                   activeOpacity={0.8}
                 >
