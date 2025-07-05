@@ -1,6 +1,8 @@
 import { Picker } from "@react-native-picker/picker";
+import * as FileSystem from "expo-file-system";
 import React, { useState } from "react";
 import {
+  ActivityIndicator,
   Button,
   Modal,
   StyleSheet,
@@ -14,12 +16,14 @@ import * as DocumentPicker from "expo-document-picker";
 import { useRouter } from "expo-router";
 import { supabase } from "../../utils/supabase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Toast from "react-native-toast-message";
 
 const AddDocForm = ({ subject }) => {
   const [title, setTitle] = useState("");
   const [resourceType, setResourceType] = useState("");
   const [file, setFile] = useState(null);
   const [url, setUrl] = useState("");
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const pickDocument = async () => {
@@ -47,7 +51,8 @@ const AddDocForm = ({ subject }) => {
   };
 
   const handleSubmit = async () => {
-    const name = await AsyncStorage.getItem("name");
+    setLoading(true);
+    const u_name = await AsyncStorage.getItem("name");
     if (resourceType === "Youtube Link" || resourceType === "Websites") {
       const { error } = await supabase.from("resources").insert({
         title: title,
@@ -55,60 +60,92 @@ const AddDocForm = ({ subject }) => {
         category: resourceType,
         url: url,
         file_url: null,
-        uploaded_by: name,
+        uploaded_by: u_name,
       });
 
       if (error) {
         console.error("Error inserting data: ", error);
       } else {
         console.log("Data inserted successfully");
+        setLoading(false);
+        Toast.show({
+          type: "success",
+          text1: "Uploaded successfully!",
+          position: "bottom",
+        });
+        router.replace("/(acadTabs)");
       }
     } else {
       try {
         const { uri, name, mimeType } = file;
 
+        if (name.split(".")[1] != "pdf") {
+          alert("Only PDF files are allowed");
+          setLoading(false);
+          return;
+        }
+
         console.log("File URI: ", uri);
         console.log("File name: ", name);
         console.log("File mimeType: ", mimeType);
 
-        const response = await fetch(uri);
-        const blob = await response.blob();
+        const uploadPath = `${subject}/${resourceType}/${name}`;
 
-        console.log("Blob: ", blob);
+        const base64Data = await FileSystem.readAsStringAsync(uri, {
+          encoding: FileSystem.EncodingType.Base64,
+        });
 
-        console.log(`Upload path: ${subject}/${resourceType}/${name}`);
+        // Step 3: Convert base64 to Uint8Array
+        const byteArray = Uint8Array.from(atob(base64Data), (c) =>
+          c.charCodeAt(0)
+        );
 
+        // Step 4: Upload to Supabase
         const { data, error } = await supabase.storage
-          .from("resources")
-          .upload(`${subject}/${resourceType}/${name}`, blob, {
+          .from("resources") // your bucket name
+          .upload(uploadPath, byteArray, {
             contentType: mimeType || "application/octet-stream",
           });
 
-        console.log("checkpoint 1");
-
         if (error) {
-          console.error("Error uploading file: ", error);
+          if (error.message.includes("already exists")) {
+            alert(
+              "File with the same name already exists. Please rename the file and try again."
+            );
+            setLoading(false);
+          } else {
+            console.error("File upload failed:", error);
+            alert("File upload failed. Please try again.");
+          }
         } else {
-          console.log("File uploaded successfully: ", data);
+          console.log("File uploaded successfully:", data);
+
+          // Insert record in the database with file URL
+          const { error: dbError } = await supabase.from("resources").insert({
+            title,
+            subject,
+            category: resourceType,
+            url: null,
+            file_url: data.path,
+            uploaded_by: u_name,
+          });
+
+          if (dbError) {
+            console.error("DB insert failed:", dbError);
+          } else {
+            console.log("DB insert successful");
+            setLoading(false);
+            Toast.show({
+              type: "success",
+              text1: "Uploaded successfully!",
+              position: "bottom",
+            });
+            router.replace("/(acadTabs)");
+          }
         }
-      } catch (error) {
-        console.error("Error uploading file: ", error);
+      } catch (err) {
+        console.error("File upload failed:", err);
       }
-
-      // const { error } = await supabase.from("resources").insert({
-      //   title: title,
-      //   subject: subject,
-      //   category: resourceType,
-      //   url: null,
-      //   file_url: `${subject}/${resourceType}/${file.name}`,
-      //   uploaded_by: name,
-      // });
-
-      // if (error) {
-      //   console.error("Error inserting data: ", error);
-      // } else {
-      //   console.log("Data inserted successfully");
-      // }
     }
   };
 
@@ -177,7 +214,7 @@ const AddDocForm = ({ subject }) => {
               value="Classroom Notes"
               color="black"
             />
-            <Picker.Item label="Text Books" value="Text Books" color="black" />
+            <Picker.Item label="Text Book" value="Text Book" color="black" />
             <Picker.Item label="Website" value="Website" color="black" />
             <Picker.Item
               label="Question Paper"
@@ -239,11 +276,14 @@ const AddDocForm = ({ subject }) => {
         activeOpacity={0.75}
         onPress={async () => {
           await handleSubmit();
-          router.replace("/(acadTabs)");
         }}
         disabled={!formFilled()}
       >
-        <Text className="text-white text-2xl">Add</Text>
+        {loading ? (
+          <ActivityIndicator size={"small"} className="my-1" color={"white"} />
+        ) : (
+          <Text className="text-white text-2xl">Add</Text>
+        )}
       </TouchableOpacity>
     </View>
   );

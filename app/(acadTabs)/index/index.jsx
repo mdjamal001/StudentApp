@@ -7,24 +7,50 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import  { useState,useLayoutEffect } from "react";
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useState, useLayoutEffect, useCallback } from "react";
+import {
+  BackHandler,
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useSubject } from "../../../utils/SubjectContext";
 import { theme } from "../../../Theme";
 import { ScrollView } from "react-native";
 import AddDocForm from "../../../components/Academics/AddDocForm";
+import { StatusBar } from "expo-status-bar";
+import { useFocusEffect } from "@react-navigation/native";
 
 const Index = () => {
   const { selectedAcademicSubject } = useSubject();
   const router = useRouter();
   const [showAddDocForm, setShowAddDocForm] = useState(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        // 👇 Navigate to desired screen when device back is pressed
+        router.replace("/academics"); // Replace with your target route
+        return true; // prevent default behavior
+      };
+
+      BackHandler.addEventListener("hardwareBackPress", onBackPress);
+
+      return () => {
+        BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+      };
+    }, [])
+  );
   return (
     <View className="bg-white flex-1">
+      <StatusBar style="dark" />
       <View
         className="h-28 bg-white flex-row items-center pt-8 pl-2"
         style={{ elevation: 8 }}
       >
-        <TouchableOpacity onPress={() => router.replace('../academics')}>
+        <TouchableOpacity onPress={() => router.replace("../academics")}>
           <AntDesign name="arrowleft" size={25} color={"black"} />
         </TouchableOpacity>
         <Text className="text-2xl  ml-5 line-clamp-1">
@@ -37,8 +63,8 @@ const Index = () => {
           <TouchableOpacity
             onPress={() => {
               router.push({
-                pathname: "Index/resources",
-                params: { type: "Documents", subject: selectedAcademicSubject },
+                pathname: "/resources",
+                params: { type: "Document", subject: selectedAcademicSubject },
               });
             }}
             activeOpacity={0.8}
@@ -65,9 +91,9 @@ const Index = () => {
           <TouchableOpacity
             onPress={() => {
               router.push({
-                pathname: "Index/resources",
+                pathname: "/resources",
                 params: {
-                  type: "Youtube Links",
+                  type: "Youtube Link",
                   subject: selectedAcademicSubject,
                 },
               });
@@ -92,7 +118,7 @@ const Index = () => {
           <TouchableOpacity
             onPress={() => {
               router.push({
-                pathname: "Index/resources",
+                pathname: "/resources",
                 params: {
                   type: "Classroom Notes",
                   subject: selectedAcademicSubject,
@@ -123,8 +149,8 @@ const Index = () => {
           <TouchableOpacity
             onPress={() => {
               router.push({
-                pathname: "Index/resources",
-                params: { type: "Textbooks", subject: selectedAcademicSubject },
+                pathname: "/resources",
+                params: { type: "Textbook", subject: selectedAcademicSubject },
               });
             }}
             activeOpacity={0.8}
@@ -147,8 +173,8 @@ const Index = () => {
           <TouchableOpacity
             onPress={() => {
               router.push({
-                pathname: "Index/resources",
-                params: { type: "Websites", subject: selectedAcademicSubject },
+                pathname: "/resources",
+                params: { type: "Website", subject: selectedAcademicSubject },
               });
             }}
             activeOpacity={0.8}
@@ -175,9 +201,9 @@ const Index = () => {
           <TouchableOpacity
             onPress={() => {
               router.push({
-                pathname: "Index/resources",
+                pathname: "/resources",
                 params: {
-                  type: "Question Papers (prev)",
+                  type: "Question Paper",
                   subject: selectedAcademicSubject,
                 },
               });
@@ -206,9 +232,9 @@ const Index = () => {
           <TouchableOpacity
             onPress={() => {
               router.push({
-                pathname: "Index/resources",
+                pathname: "/resources",
                 params: {
-                  type: "Other Resources",
+                  type: "Other",
                   subject: selectedAcademicSubject,
                 },
               });

@@ -4,6 +4,7 @@ import { Stack } from "expo-router";
 import * as NavigationBar from "expo-navigation-bar";
 import { SubjectProvider } from "../utils/SubjectContext";
 import { SIdProvider } from "../utils/SIdContext";
+import Toast from "react-native-toast-message";
 
 export default function _layout() {
   NavigationBar.setBackgroundColorAsync("white");
@@ -12,7 +13,10 @@ export default function _layout() {
   return (
     <SubjectProvider>
       <SIdProvider>
-        <Stack screenOptions={{ headerShown: false }}></Stack>
+        <Stack
+          screenOptions={{ headerShown: false, animation: "fade" }}
+        ></Stack>
+        <Toast />
       </SIdProvider>
     </SubjectProvider>
   );
