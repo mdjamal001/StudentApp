@@ -16,6 +16,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import * as SQLite from "expo-sqlite";
 import { Link } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const SubjectWiseList = () => {
   const [subjectsData, setSubjectsData] = useState([]);
@@ -24,8 +25,9 @@ const SubjectWiseList = () => {
   useEffect(() => {
     const getSubjectsData = async () => {
       const db = await SQLite.openDatabaseAsync("localStorage");
+      const sem =await AsyncStorage.getItem("semester");
       const result = await db.getAllAsync(
-        `SELECT * FROM subjects WHERE semester=4`
+        `SELECT * FROM subjects WHERE semester=${sem}`
       );
       setSubjectsData(result);
     };

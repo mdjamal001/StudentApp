@@ -123,18 +123,12 @@ export const db_init = async () => {
   }
 
   const timetableData = await db.getAllAsync(`SELECT * FROM timetable`);
-  const subjectData = await db.getAllAsync(`SELECT * FROM subjects`);
-  const syllData = await db.getAllAsync(`SELECT * FROM syllabus`);
+ 
 
 
   timetableData.forEach((classData) => {
     console.log(classData);
   });
-  subjectData.forEach((subject) => {
-    console.log(subject);
-  });
-  syllData.forEach((syll) => {
-    console.log(syll);
-  });
+  
   
 };
