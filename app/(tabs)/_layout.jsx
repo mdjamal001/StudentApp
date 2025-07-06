@@ -11,36 +11,10 @@ import {
 import { theme } from "../../Theme";
 import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-// import InitialNavigation from "./InitialNavigation";
-// import InitialNavigation from "../../Navigation/InitialNavigation";
+
 
 const Layout = () => {
-  // NavigationBar.setBorderColorAsync("#eeeeee");
-
-  // const [hasStuData, setHasStuData] = useState(false);
-
-  // useEffect(() => {
-  //   const checkStuData = async () => {
-  //     try {
-  //       await AsyncStorage.removeItem("semester");
-  //       const value = await AsyncStorage.getItem("semester");
-  //       if (value != null) {
-  //         setHasStuData(true);
-  //       } else {
-  //         setHasStuData(false);
-  //       }
-  //     } catch (e) {
-  //       console.log("Error: ", e);
-  //       setHasStuData(false);
-  //     }
-  //   };
-  //   checkStuData();
-  // });
-
-  // if (!hasStuData) {
-  //   return <InitialNavigation />;
-  // }
-
+ 
   return (
     <Tabs
       screenOptions={{
@@ -85,12 +59,12 @@ const Layout = () => {
         }}
       />
       <Tabs.Screen
-        name="clubs"
+        name="notifications"
         options={{
-          title: "Clubs",
+          title: "Notifications",
           tabBarIcon: ({ focused, color }) => (
             <FontAwesome6
-              name="users"
+              name="bell"
               size={22}
               color={focused ? color : "gray"}
             />

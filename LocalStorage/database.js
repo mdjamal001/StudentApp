@@ -24,6 +24,7 @@ export const db_init = async () => {
   await db.execAsync(`DROP TABLE IF EXISTS timetable`);
   await db.execAsync(`DROP TABLE IF EXISTS syllabus`);
   await db.execAsync(`DROP TABLE IF EXISTS subjects`);
+  await db.execAsync(`DROP TABLE IF EXISTS notifications`);
   
 
   await db.execAsync(`
@@ -69,6 +70,27 @@ export const db_init = async () => {
       FOREIGN KEY (subject_id) REFERENCES subjects(id)
     )`
   );
+  await db.execAsync(
+    `CREATE TABLE notifications (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      title TEXT,
+      subject TEXT,
+      sentdate DATE,
+      info TEXT
+    )`
+  );
+  await db.execAsync(
+      `INSERT INTO notifications (title,subject,sentdate,info) VALUES ('Assignment','SE','01-JAN-2025','dsfghjjkasgdujfgjasdfdsfs')`
+    );
+  await db.execAsync(
+      `INSERT INTO notifications (title,subject,sentdate,info) VALUES ('Internship','Company1','02-JAN-2025','fgdgerfyhrghuer')`
+    );
+  await db.execAsync(
+      `INSERT INTO notifications (title,subject,sentdate,info) VALUES ('Scholarship','fingerprint','03-JAN-2025','uuyittyhrtyjurt')`
+    );
+  await db.execAsync(
+      `INSERT INTO notifications (title,subject,sentdate,info) VALUES ('Exam','mid','04-JAN-2025','tyrtertgegdfghd')`
+    );
   //Make an API call to fetch data of timetable and subjects
   const {data:timetable,error:er} = 
     await supabase.from('timetable').select('*').eq('semester',parseInt(semester)).eq('branch',branch);
