@@ -79,7 +79,6 @@ const SubjectAttendance = () => {
 
   const findMarkedStatus = (date) => {
     let color = "";
-    console.log("Selected date: ", date.dateString);
     if (datesToBeMarked[date.dateString]) {
       color = datesToBeMarked[date.dateString].dotColor;
     } else {
@@ -123,7 +122,6 @@ const SubjectAttendance = () => {
     });
     await db.execAsync(`INSERT INTO attendance (date, subject_id, status) 
       VALUES ("${y}-${months2[markedStatus.selectedDate.month]}-${markedStatus.selectedDate.year}", ${params.id}, "Not Marked")`);
-    console.log("Done here");
   }
   const handleAttUpdate = async () => {
     const db = await SQLite.openDatabaseAsync("localStorage");
@@ -186,13 +184,11 @@ const SubjectAttendance = () => {
         const result = await db.getAllAsync(
           `SELECT * FROM attendance WHERE subject_id=${params.id}`
         );
-        console.log("Attendance history: ", result)
 
         if (result.length > 0) {
           let datesResult = {};
           result.forEach((attRecord) => {
-            let date = attRecord.date.split("-");
-            console.log("watch:"+date);            
+            let date = attRecord.date.split("-");           
             let formattedDate = `${date[2]}-${months[date[1]]}-${date[0]}`;
             let status = attRecord.status;
             let markerColor =
@@ -209,7 +205,6 @@ const SubjectAttendance = () => {
               dotColor: markerColor,
             };
           });
-          //console.log("Result: ", datesResult);
           setDatesToBeMarked(datesResult);
         }
       };
