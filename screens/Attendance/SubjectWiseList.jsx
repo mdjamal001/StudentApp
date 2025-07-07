@@ -11,11 +11,11 @@ import {
 import { classes } from "../../sampleData/classes";
 import CircularProgress from "react-native-circular-progress-indicator";
 import { theme } from "../../Theme";
-import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import * as SQLite from "expo-sqlite";
 import { Link } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const SubjectWiseList = () => {
   const [subjectsData, setSubjectsData] = useState([]);
@@ -24,8 +24,9 @@ const SubjectWiseList = () => {
   useEffect(() => {
     const getSubjectsData = async () => {
       const db = await SQLite.openDatabaseAsync("localStorage");
+      const semester = await AsyncStorage.getItem("semester");
       const result = await db.getAllAsync(
-        `SELECT * FROM subjects WHERE semester=4`
+        `SELECT * FROM subjects WHERE semester=${semester}`
       );
       setSubjectsData(result);
     };
@@ -46,8 +47,7 @@ const SubjectWiseList = () => {
       <ScrollView showsVerticalScrollIndicator={false}>
         {subjectsData.map((subjectData, index) => {
           return (
-            <Animated.View
-              entering={FadeIn.delay(index * 100).duration(800)}
+            <View
               key={index}
               className="mt-3 mx-2 bg-white rounded-lg items-center"
               style={{
@@ -78,7 +78,7 @@ const SubjectWiseList = () => {
                 </View>
               </TouchableOpacity>
               {/* </View> */}
-            </Animated.View>
+            </View>
           );
         })}
         {/* <View className="mb-20" /> */}

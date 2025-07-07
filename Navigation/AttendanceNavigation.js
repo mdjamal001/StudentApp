@@ -10,7 +10,7 @@ const Stack = createNativeStackNavigator();
 const AttendanceNavigation = () => {
   return (
     <Stack.Navigator
-      screenOptions={{ headerShown: false }}
+      screenOptions={{ headerShown: false, animation: "fade" }}
       initialRouteName="Primary Attendance"
     >
       <Stack.Screen name="Primary Attendance" component={PrimaryAttendance} />

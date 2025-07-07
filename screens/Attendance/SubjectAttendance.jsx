@@ -146,6 +146,10 @@ const SubjectAttendance = () => {
       setTodayDate(
         `${currentDate.year}-${months[currentDate.month]}-${currentDate.date}`
       );
+      console.log(
+        "Today date: ",
+        `${currentDate.year}-${months[currentDate.month]}-${currentDate.date}`
+      );
       const getAttHistory = async () => {
         const db = await SQLite.openDatabaseAsync("localStorage");
         const result = await db.getAllAsync(
@@ -157,7 +161,9 @@ const SubjectAttendance = () => {
           let datesResult = {};
           result.forEach((attRecord) => {
             let date = attRecord.date.split("-");
-            let formattedDate = `${date[2]}-${months[date[1]]}-${date[0]}`;
+            let formattedDate = `${date[2]}-${months[date[1]]}-${
+              "0" + date[0]
+            }`;
             let status = attRecord.status;
             let markerColor =
               status === "Present"

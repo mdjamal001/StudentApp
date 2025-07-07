@@ -7,6 +7,8 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useState } from "react";
 import {
   ActivityIndicator,
+  Linking,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableNativeFeedback,
@@ -22,6 +24,10 @@ const Resources = () => {
 
   const [loading, setLoading] = useState(true);
   const [resources, setResources] = useState([]);
+
+  const isLink = () => {
+    return params.type === "Youtube Link" || params.type === "Websites";
+  };
 
   const downloadFile = async (filePath, fileName) => {
     const { data } = supabase.storage.from("resources").getPublicUrl(filePath);
@@ -40,6 +46,13 @@ const Resources = () => {
     } else {
       alert("File downloaded to: " + uri);
     }
+  };
+
+  const openLink = (url) => {
+    Linking.openURL(url).catch((err) => {
+      console.error("Failed to open URL:", err);
+      alert("Failed to open the link. Please try again.");
+    });
   };
 
   const openResource = async (resource) => {
@@ -96,59 +109,69 @@ const Resources = () => {
           <ActivityIndicator size={"large"} />
         </View>
       ) : (
-        <View
-          className="p-2 gap-2"
-          style={{
-            flexDirection: resources.length > 0 ? "row" : "none",
-            flexWrap: resources.length > 0 ? "wrap" : "nowrap",
-            justifyContent: resources.length > 0 ? "flex-start" : "center",
-            alignItems: resources.length > 0 ? "flex-start" : "center",
-            height: resources.length > 0 ? "auto" : "90%",
-          }}
-        >
-          {resources.length > 0 ? (
-            resources.map((resource, index) => (
-              <TouchableOpacity
-                activeOpacity={0.8}
-                key={index}
-                className="bg-white p-4 rounded-lg mb-1"
-                style={{ elevation: 5, width: "48.5%" }}
-                onPress={() => {
-                  openResource(resource);
-                }}
-              >
-                <Text className="text-lg font-semibold line-clamp-1">
-                  {resource.title}
-                </Text>
-                <Text className="text-gray-500">{resource.uploaded_by}</Text>
-                <Text className="text-gray-500 text-xs">
-                  Upload Date: {resource.created_at.split("T")[0]}
-                </Text>
-                <View className="flex-row justify-between items-center mt-3">
-                  <View className="flex-row items-center ">
-                    <EvilIcons name="like" size={22} color={"black"} />
-                    <Text className="text-gray-500 text-s">
-                      {resource.likes}
-                    </Text>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View
+            className="p-2 gap-1.5"
+            style={{
+              flexDirection: resources.length > 0 ? "row" : "none",
+              flexWrap: resources.length > 0 ? "wrap" : "nowrap",
+              justifyContent: resources.length > 0 ? "flex-start" : "center",
+              alignItems: resources.length > 0 ? "flex-start" : "center",
+              height: resources.length > 0 ? "auto" : "90%",
+            }}
+          >
+            {resources.length > 0 ? (
+              resources.map((resource, index) => (
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  key={index}
+                  className="bg-white p-4 rounded-lg mb-1"
+                  style={{ elevation: 5, width: isLink() ? "100%" : "49%" }}
+                  onPress={() => {
+                    if (isLink()) {
+                      openLink(resource.url);
+                    } else {
+                      openResource(resource);
+                    }
+                  }}
+                >
+                  <Text className="text-lg font-semibold line-clamp-1">
+                    {resource.title}
+                  </Text>
+                  <Text className="text-gray-500">{resource.uploaded_by}</Text>
+                  <Text className="text-gray-500 text-xs">
+                    Upload Date: {resource.created_at.split("T")[0]}
+                  </Text>
+                  <View className="flex-row justify-between items-center mt-3">
+                    <View className="flex-row items-center ">
+                      <EvilIcons name="like" size={22} color={"black"} />
+                      <Text className="text-gray-500 text-s">
+                        {resource.likes}
+                      </Text>
+                    </View>
+                    {!isLink() ? (
+                      <TouchableOpacity
+                        className="py-1.5 px-2 rounded-full"
+                        style={{ backgroundColor: theme.primaryColor(0.15) }}
+                        onPress={() => {
+                          downloadFile(resource.file_url, resource.title);
+                        }}
+                      >
+                        <AntDesign name="download" size={15} color={"gray"} />
+                      </TouchableOpacity>
+                    ) : (
+                      <View></View>
+                    )}
                   </View>
-                  <TouchableOpacity
-                    className="py-1.5 px-2 rounded-full"
-                    style={{ backgroundColor: theme.primaryColor(0.15) }}
-                    onPress={() => {
-                      downloadFile(resource.file_url, resource.title);
-                    }}
-                  >
-                    <AntDesign name="download" size={15} color={"gray"} />
-                  </TouchableOpacity>
-                </View>
-              </TouchableOpacity>
-            ))
-          ) : (
-            <View className="flex-1 justify-center items-center">
-              <Text className="text-gray-500">No resources available</Text>
-            </View>
-          )}
-        </View>
+                </TouchableOpacity>
+              ))
+            ) : (
+              <View className="flex-1 justify-center items-center">
+                <Text className="text-gray-500">No resources available</Text>
+              </View>
+            )}
+          </View>
+        </ScrollView>
       )}
     </View>
   );
