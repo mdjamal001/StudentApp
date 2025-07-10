@@ -24,18 +24,43 @@ const Notifications = () => {
    const [load,loading]=useState(true);
    const [str,setStr]=useState(null);
    const [visible, setVisible] = useState(false);
-  
+
+   const fetchonline =async ()=>{
+    let s=new Date().toISOString().substring(0,10);
+    console.log("WHat up "+ s+"  "+new Date().getHours());
+    loading(true);
+    const branch = await AsyncStorage.getItem("branch");
+    const semester = parseInt(await AsyncStorage.getItem("semester"));
+    const {data:res,error:er} = 
+            await supabase.from('notifications').select('*').eq('semester',semester).eq('branch',branch).gte('sentdate',s).order('sentdate',{ascending:false});
+    if(er){
+       console.log("error : "+er);
+      }
+    if (res.length > 0){ 
+      console.log(res);
+      const db = await SQLite.openDatabaseAsync("localStorage");
+      await db.execAsync(`delete from notiTemp`);
+      console.log("YO");
+      for (let noti of res) {
+      await db.execAsync(
+       `INSERT INTO notiTemp (id, title, subject, sentdate, info, sentHour) VALUES (${noti.id}, "${noti.title}", "${noti.subject}", "${noti.sentdate}", "${noti.info}",${noti.sentHour}) `
+      );
+     }
+      await db.execAsync(
+       `INSERT INTO notifications (id, title, subject, sentdate, info, sentHour) select id,title,subject,sentdate,info,sentHour from notiTemp where id not in (select id from notifications);`
+      );
+  }
+  fetchNotif();
+  loading(false); 
+      
+   }
    const fetchNotif= async ()=>{
             console.log("DATA   "+str)
             loading(true);
-            const branch = await AsyncStorage.getItem("branch");
-            const semester = parseInt(await AsyncStorage.getItem("semester"));
-            const {data:res,error:er} = 
-                await supabase.from('notifications').select('*').eq('semester',semester).eq('branch',branch).order('sentdate',{ascending:false});
-              if(er){
-                console.log("error : "+er);
-              }
-            console.log("DATA@")
+            const db = await SQLite.openDatabaseAsync("localStorage");
+            const res = await db.getAllAsync(
+                        `SELECT id,title,subject,info,status,sentdate FROM notifications order by sentdate desc, sentHour,id`
+                      ); 
             if (res.length > 0) {
               console.log(res);
               getnlist(res);
@@ -72,8 +97,10 @@ const Notifications = () => {
           <Menu.Item onPress={() => {setStr("Exam");setVisible(false)}} title="Exams" />
           <Menu.Item onPress={() => {setStr("Scholarship");setVisible(false)}} title="Scholarship" />
           <Menu.Item onPress={() => {setStr("Internship");setVisible(false)}} title="Internship" />
+          <Menu.Item onPress={() => {setStr("true");setVisible(false);fetchNotif()}} title="Seen" />
+          <Menu.Item onPress={() => {setStr("false");setVisible(false);fetchNotif()}} title="Not Seen" />
         </Menu>
-         <TouchableOpacity className="pr-10 pt-1" onPress={()=>{setStr();fetchNotif()}}> 
+         <TouchableOpacity className="pr-10 pt-1" onPress={()=>{setStr();fetchonline()}}> 
           <FontAwesome name="refresh" size={28} color={theme.primaryColor(0.6)}/>
           </TouchableOpacity>
       </View>
@@ -109,7 +136,7 @@ const Notifications = () => {
         <TouchableOpacity className="pl-32 pt-1"> 
           <FontAwesome name="filter" size={28} color={theme.primaryColor(0.6)}/>
           </TouchableOpacity>
-         <TouchableOpacity className="pr-10 pt-1" onPress={()=>{loading(true);fetchNotif();}}> 
+         <TouchableOpacity className="pr-10 pt-1" onPress={()=>{loading(true);fetchonline();}}> 
           <FontAwesome name="refresh" size={28} color={theme.primaryColor(0.6)}/>
           </TouchableOpacity>
         </View>

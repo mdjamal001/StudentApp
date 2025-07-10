@@ -24,6 +24,8 @@ export const db_init = async () => {
   await db.execAsync(`DROP TABLE IF EXISTS timetable`);
   await db.execAsync(`DROP TABLE IF EXISTS syllabus`);
   await db.execAsync(`DROP TABLE IF EXISTS subjects`);
+  await db.execAsync(`DROP TABLE IF EXISTS notifications`);
+  await db.execAsync(`DROP TABLE IF EXISTS notiTemp`);
   
 
   await db.execAsync(`
@@ -69,6 +71,28 @@ export const db_init = async () => {
       FOREIGN KEY (subject_id) REFERENCES subjects(id)
     )`
   );
+  await db.execAsync(
+    `CREATE TABLE notifications (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      title TEXT,
+      subject TEXT,
+      sentdate DATE,
+      sentHour INTEGER,
+      info TEXT default NULL,
+      status BOOLEAN DEFAULT false
+    )`
+  );
+  await db.execAsync(
+    `CREATE TABLE notiTemp (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      title TEXT,
+      subject TEXT,
+      sentdate DATE,
+      sentHour INTEGER,
+      info TEXT default NULL,
+      status BOOLEAN DEFAULT false
+    )`
+  );
   //Make an API call to fetch data of timetable and subjects
   const {data:timetable,error:er} = 
     await supabase.from('timetable').select('*').eq('semester',parseInt(semester)).eq('branch',branch);
@@ -80,9 +104,11 @@ export const db_init = async () => {
   if(err){
     console.log("error : "+err);
   }
-  
-  
-  //Make an API call to fetch data of timetable and subjects
+  const {data:notifications,error:e} =
+   await supabase.from('notifications').select('*').eq('semester',parseInt(semester)).eq('branch',branch).order('sentdate',{ascending:false});
+  if(err){
+    console.log("error : "+e);
+  }
   const { data:subjects, error } = await supabase.rpc('get_subjects_by_branch_semester', {
   input_branch: branch,
   input_semester: parseInt(semester)
@@ -94,6 +120,11 @@ export const db_init = async () => {
   for (let subject of subjects) {
     await db.execAsync(
       `INSERT INTO subjects (id, subject_name, attendance_percent, semester, total_classes, attended_classes) VALUES (${subject.subject_id}, "${subject.subject_name}", 0, ${semester}, 0, 0)`
+    );
+  }
+  for (let noti of notifications) {
+    await db.execAsync(
+      `INSERT INTO notifications (id, title, subject, sentdate, info, sentHour) VALUES (${noti.id}, "${noti.title}", "${noti.subject}", "${noti.sentdate}", "${noti.info}",${noti.sentHour})`
     );
   }
   for (let syll of syllabus) {
@@ -123,10 +154,13 @@ export const db_init = async () => {
   }
 
   const timetableData = await db.getAllAsync(`SELECT * FROM timetable`);
- 
+  const notiData = await db.getAllAsync(`SELECT * FROM notifications`);
 
 
   timetableData.forEach((classData) => {
+    console.log(classData);
+  });
+  notiData.forEach((classData) => {
     console.log(classData);
   });
   
