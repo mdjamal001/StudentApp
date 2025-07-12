@@ -1,91 +1,59 @@
 import React, { useEffect, useState } from "react";
-import { Linking, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { theme } from "../../Theme";
 import LottieView from "lottie-react-native";
-import { StatusBar } from "expo-status-bar";
-import { supabase } from "../../utils/supabase";
-import { useRouter } from "expo-router";
-import queryString from "query-string";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { supabase } from "../../utils/supabase";
 
-const confirmEmail = () => {
+export default function ConfirmEmail() {
   const [showHourglass, setShowHourglass] = useState(true);
-  const [debugText, setDebugText] = useState("waitng for deep link...");
-
+  const [debugText, setDebugText] = useState(
+    "Waiting for email verification..."
+  );
   const router = useRouter();
+  const { email, password } = useLocalSearchParams();
 
-  async function handleDeepLink(event) {
-    const url = event.url;
-    console.log("Deep link received:", url);
+  console.log("Email:", email);
+  console.log("Password:", password);
 
-    setDebugText("Deep link received: " + url);
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      try {
+        if (!email || !password) {
+          setDebugText("No stored credentials found");
+          return;
+        }
 
-    const queryIndex = url.indexOf("?");
-    const hashIndex = url.indexOf("#");
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
 
-    let query = "";
-    if (queryIndex !== -1) {
-      query = url.slice(queryIndex + 1);
-    } else if (hashIndex !== -1) {
-      query = url.slice(hashIndex + 1);
-    } else {
-      setDebugText("No query or hash string found in URL: " + url);
-      return;
-    }
-    const parsed = queryString.parse(query);
-    const { access_token, refresh_token } = parsed;
+        if (error) {
+          setDebugText("Still waiting for email verification...");
+          console.log("Sign-in attempt failed:", error.message);
+          return;
+        }
 
-    if (access_token && refresh_token) {
-      console.log(
-        "Access and Refresh tokens received:",
-        access_token,
-        refresh_token
-      );
-      setDebugText("Access and Refresh tokens received");
-
-      const { data, error } = await supabase.auth.setSession({
-        access_token,
-        refresh_token,
-      });
-
-      if (error) {
-        console.error("Setting session failed:", error.message);
-      } else {
-        console.log("Session set successfully!");
-
-        setDebugText("Supabse session set successfully!");
-
-        // Save session locally
-        try {
+        if (data?.user?.email_confirmed_at) {
+          setDebugText("Email verified and signed in!");
           await AsyncStorage.setItem(
             "user_session",
             JSON.stringify(data.session)
           );
-
-          console.log("Session saved locally!");
-          const sessionData = await AsyncStorage.getItem("user_session");
-          console.log("Session data:", sessionData);
-
-          setDebugText("Session saved locally!");
-
           setShowHourglass(false);
-        } catch (e) {
-          setDebugText("Failed to save session locally!" + e.message + e);
-          console.error("Failed to save session:", e);
+          clearInterval(interval);
+        } else {
+          setDebugText("Email not verified yet...");
         }
+      } catch (err) {
+        setDebugText("Error checking verification: " + err.message);
+        console.error("Verification check error:", err);
       }
-    } else {
-      setDebugText("No tokens found in URL.");
-      console.log("No tokens found in URL.");
-    }
-  }
+    }, 4000);
 
-  useEffect(() => {
-    const linkingListener = Linking.addEventListener("url", handleDeepLink);
-
-    return () => {
-      linkingListener.remove();
-    };
+    return () => clearInterval(interval);
   }, []);
 
   if (showHourglass) {
@@ -107,9 +75,6 @@ const confirmEmail = () => {
         </Text>
         <Text className="mt-8">
           We've sent you a mail to confirm your email
-        </Text>
-        <Text className="mt-8">
-          showHourGlass: {showHourglass ? "true" : "false"}
         </Text>
         <Text className="mt-8">Debug text: {debugText}</Text>
       </View>
@@ -136,8 +101,6 @@ const confirmEmail = () => {
       </View>
     );
   }
-};
+}
 
 const styles = StyleSheet.create({});
-
-export default confirmEmail;

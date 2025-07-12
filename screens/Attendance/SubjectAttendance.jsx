@@ -79,7 +79,6 @@ const SubjectAttendance = () => {
 
   const findMarkedStatus = (date) => {
     let color = "";
-    console.log("Selected date: ", date.dateString);
     if (datesToBeMarked[date.dateString]) {
       color = datesToBeMarked[date.dateString].dotColor;
     } else {
@@ -100,15 +99,45 @@ const SubjectAttendance = () => {
     setMarkedStatus({ selectedDate: date, status });
     setShowModal(true);
   };
-
+  const addAtt = async () => {
+    const db = await SQLite.openDatabaseAsync("localStorage");
+    let x = markedStatus.selectedDate.day;
+    let y = "" + x;
+    if (x < 10) {
+      y = "0" + x;
+    }
+    setDatesToBeMarked({
+      ...datesToBeMarked,
+      [markedStatus.selectedDate.dateString]: {
+        marked: true,
+        dotColor:
+          markedStatus.status === "Present"
+            ? "green"
+            : markedStatus.status === "Absent"
+            ? "red"
+            : markedStatus.status === "Cancelled"
+            ? "orange"
+            : "gray",
+      },
+    });
+    await db.execAsync(`INSERT INTO attendance (date, subject_id, status) 
+      VALUES ("${y}-${months2[markedStatus.selectedDate.month]}-${
+      markedStatus.selectedDate.year
+    }", ${params.id}, "Not Marked")`);
+  };
   const handleAttUpdate = async () => {
     const db = await SQLite.openDatabaseAsync("localStorage");
+    let x = markedStatus.selectedDate.day;
+    let y = "" + x;
+    if (x < 10) {
+      y = "0" + x;
+    }
     await db.execAsync(
       `UPDATE attendance SET status="${markedStatus.status}" WHERE subject_id=${
         params.id
-      } AND date="${markedStatus.selectedDate.day}-${
-        months2[markedStatus.selectedDate.month]
-      }-${markedStatus.selectedDate.year}"`
+      } AND date="${y}-${months2[markedStatus.selectedDate.month]}-${
+        markedStatus.selectedDate.year
+      }"`
     );
     if (markedStatus.status === "Present") {
       await db.execAsync(
@@ -119,8 +148,14 @@ const SubjectAttendance = () => {
         `UPDATE subjects SET total_classes=total_classes+1 WHERE id=${params.id}`
       );
     }
+    const result = await db.getAllAsync(
+      `SELECT * FROM subjects WHERE id=${params.id}`
+    );
+    let a = result[0].total_classes;
+    let b = result[0].attended_classes;
+    let c = b / a;
     await db.execAsync(
-      `UPDATE subjects SET attendance_percent=(attended_classes/total_classes)*100 WHERE id=${params.id}`
+      `UPDATE subjects SET attendance_percent=${c}*100 WHERE id=${params.id}`
     );
 
     setDatesToBeMarked({
@@ -155,15 +190,12 @@ const SubjectAttendance = () => {
         const result = await db.getAllAsync(
           `SELECT * FROM attendance WHERE subject_id=${params.id}`
         );
-        // console.log("Attendance history: ", result)
 
         if (result.length > 0) {
           let datesResult = {};
           result.forEach((attRecord) => {
             let date = attRecord.date.split("-");
-            let formattedDate = `${date[2]}-${months[date[1]]}-${
-              "0" + date[0]
-            }`;
+            let formattedDate = `${date[2]}-${months[date[1]]}-${date[0]}`;
             let status = attRecord.status;
             let markerColor =
               status === "Present"
@@ -179,7 +211,6 @@ const SubjectAttendance = () => {
               dotColor: markerColor,
             };
           });
-          // console.log("Result: ", datesResult);
           setDatesToBeMarked(datesResult);
         }
       };
@@ -327,6 +358,7 @@ const SubjectAttendance = () => {
                     activeOpacity={0.5}
                     className="p-2 flex-row rounded-md items-center"
                     style={{ backgroundColor: theme.primaryColor(1) }}
+                    onPress={() => addAtt()}
                   >
                     <AntDesign name="plus" size={15} color={"white"} />
                     <Text className="text-white">Add</Text>

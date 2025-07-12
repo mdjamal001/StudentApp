@@ -9,30 +9,67 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { theme } from "../../Theme";
+import { supabase } from "../../utils/supabase";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { width } = Dimensions.get("window");
-
-const banners = [
-  { type: "text", content: "📢 Midterm exams start from Oct 21" },
-  { type: "text", content: "📢 Midterm exams start from Oct 21" },
-  { type: "text", content: "💼 Placement prep starts Oct 15 – Check mail" },
-  { type: "text", content: "💼 Placement prep starts Oct 15 – Check mail" },
-];
 
 export default function NoticeBoard() {
   const scrollRef = useRef();
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [notices, setNotices] = useState([]);
+
+  const currentIndexRef = useRef(0);
 
   // Auto-scroll every 4 seconds
   useEffect(() => {
+    const fetchNotices = async () => {
+      try {
+        const sem = await AsyncStorage.getItem("semester");
+        const branch = await AsyncStorage.getItem("branch");
+        const { data: notification_ids, error } = await supabase
+          .from("NoticeBoard")
+          .select("notification_id")
+          .eq("branch", branch)
+          .eq("semester", sem);
+
+        if (!error) {
+          const notificationIds = notification_ids.map(
+            (n) => n.notification_id
+          );
+          const { data: notifications, error: notificationError } =
+            await supabase
+              .from("notifications")
+              .select("info")
+              .in("id", notificationIds);
+
+          if (!notificationError && notifications.length > 0) {
+            setNotices(notifications);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching notices:", error);
+      }
+    };
+
+    fetchNotices();
+  }, []);
+
+  useEffect(() => {
+    if (!scrollRef.current || notices.length === 0) return;
+
     const interval = setInterval(() => {
-      let nextIndex = (currentIndex + 1) % banners.length;
-      scrollRef.current.scrollTo({ x: nextIndex * width, animated: true });
+      const nextIndex = (currentIndexRef.current + 1) % notices.length;
+      if (scrollRef.current?.scrollTo) {
+        scrollRef.current.scrollTo({ x: nextIndex * width, animated: true });
+      }
+
+      currentIndexRef.current = nextIndex;
       setCurrentIndex(nextIndex);
     }, 4000);
 
     return () => clearInterval(interval);
-  }, [currentIndex]);
+  }, [notices]);
 
   const handleScroll = (e) => {
     const index = Math.round(e.nativeEvent.contentOffset.x / width);
@@ -41,17 +78,9 @@ export default function NoticeBoard() {
 
   const renderBanner = (item, i) => (
     <View key={i} style={styles.banner}>
-      {item.type === "text" ? (
-        <View style={styles.textCard}>
-          <Text style={styles.text}>{item.content}</Text>
-        </View>
-      ) : (
-        <Image
-          source={{ uri: item.content }}
-          style={styles.image}
-          resizeMode="cover"
-        />
-      )}
+      <View style={styles.textCard}>
+        <Text style={styles.text}>{item.info}</Text>
+      </View>
     </View>
   );
 
@@ -64,10 +93,10 @@ export default function NoticeBoard() {
         showsHorizontalScrollIndicator={false}
         onMomentumScrollEnd={handleScroll}
       >
-        {banners.map((item, i) => renderBanner(item, i))}
+        {notices.map((item, i) => renderBanner(item, i))}
       </ScrollView>
       <View style={styles.dots}>
-        {banners.map((_, i) => (
+        {notices.map((_, i) => (
           <View
             key={i}
             style={[styles.dot, currentIndex === i && styles.activeDot]}

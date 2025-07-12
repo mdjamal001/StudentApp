@@ -31,6 +31,10 @@ export const getCurrentDateInfo = () => {
   const date = today.getDate();
   const hour = today.getHours();
   const minute = today.getMinutes();
-
+  let x=date;
+  if(date<10){
+    const date="0"+x;
+    return{ day,date, month, year, hour, minute };
+  }
   return { day, date, month, year, hour, minute };
 };

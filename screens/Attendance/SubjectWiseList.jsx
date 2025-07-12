@@ -24,9 +24,8 @@ const SubjectWiseList = () => {
   useEffect(() => {
     const getSubjectsData = async () => {
       const db = await SQLite.openDatabaseAsync("localStorage");
-      const semester = await AsyncStorage.getItem("semester");
       const result = await db.getAllAsync(
-        `SELECT * FROM subjects WHERE semester=${semester}`
+        `SELECT * FROM subjects WHERE semester=4`
       );
       setSubjectsData(result);
     };
