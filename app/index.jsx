@@ -12,7 +12,7 @@ export default function Index() {
   useEffect(() => {
     const checkStuData = async () => {
       try {
-        const value = await AsyncStorage.getItem("user_session");
+        const value = await AsyncStorage.getItem("semester");
         console.log("Stored session from AsyncStorage:", value);
         if (value !== null) {
           router.replace("/(tabs)");

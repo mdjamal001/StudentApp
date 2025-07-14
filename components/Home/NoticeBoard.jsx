@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useContext } from "react";
 import {
   View,
   ScrollView,
@@ -11,10 +11,13 @@ import {
 import { theme } from "../../Theme";
 import { supabase } from "../../utils/supabase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AuthContext } from "../../utils/AuthContext";
 
 const { width } = Dimensions.get("window");
 
 export default function NoticeBoard() {
+  const { user } = useContext(AuthContext);
+
   const scrollRef = useRef();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [notices, setNotices] = useState([]);
@@ -84,6 +87,23 @@ export default function NoticeBoard() {
     </View>
   );
 
+  if (!user) {
+    return (
+      <View style={styles.container} className="justify-center items-center ">
+        <View
+          className="flex-1 justify-center items-center rounded-lg"
+          style={{
+            width: width - 40,
+            backgroundColor: theme.secondaryColor(0.1),
+          }}
+        >
+          <Text className="text-lg text-gray-600">
+            Log In to view Notice Board
+          </Text>
+        </View>
+      </View>
+    );
+  }
   return (
     <View style={styles.container}>
       <ScrollView

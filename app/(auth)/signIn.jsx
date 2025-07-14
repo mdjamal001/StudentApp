@@ -47,7 +47,7 @@ const SignIn = () => {
         "user_session",
         JSON.stringify(respose.data.session)
       );
-      console.log("Session saved locally!");
+      console.log("Session saved locally!", respose.data.session);
 
       setShowModal(false);
       if (respose.error) {
@@ -125,7 +125,7 @@ const SignIn = () => {
               placeholderTextColor={theme.secondaryColor(0.25)}
               onChangeText={setEmail}
               value={email}
-              className="text-lg"
+              className="text-lg line-clamp-1"
               cursorColor={theme.primaryColor(1)}
             />
           </View>

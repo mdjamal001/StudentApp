@@ -4,7 +4,7 @@ import * as Sharing from "expo-sharing";
 import * as WebBrowser from "expo-web-browser";
 import { useFocusEffect } from "@react-navigation/native";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useContext, useState } from "react";
 import {
   ActivityIndicator,
   Linking,
@@ -17,51 +17,17 @@ import {
 } from "react-native";
 import { supabase } from "../../../utils/supabase";
 import { theme } from "../../../Theme";
+import { AuthContext } from "../../../utils/AuthContext";
+import ResourceCard from "../../../components/Academics/ResourceCard";
 
 const Resources = () => {
+  const { user } = useContext(AuthContext);
+
   const params = useLocalSearchParams();
   const router = useRouter();
 
   const [loading, setLoading] = useState(true);
   const [resources, setResources] = useState([]);
-
-  const isLink = () => {
-    return params.type === "Youtube Link" || params.type === "Websites";
-  };
-
-  const downloadFile = async (filePath, fileName) => {
-    const { data } = supabase.storage.from("resources").getPublicUrl(filePath);
-
-    const localUri = FileSystem.documentDirectory + fileName;
-
-    const downloadResumable = FileSystem.createDownloadResumable(
-      data.publicUrl,
-      localUri
-    );
-
-    const { uri } = await downloadResumable.downloadAsync();
-
-    if (await Sharing.isAvailableAsync()) {
-      await Sharing.shareAsync(uri);
-    } else {
-      alert("File downloaded to: " + uri);
-    }
-  };
-
-  const openLink = (url) => {
-    Linking.openURL(url).catch((err) => {
-      console.error("Failed to open URL:", err);
-      alert("Failed to open the link. Please try again.");
-    });
-  };
-
-  const openResource = async (resource) => {
-    const { data } = supabase.storage
-      .from("resources")
-      .getPublicUrl(resource.file_url);
-
-    await WebBrowser.openBrowserAsync(data.publicUrl);
-  };
 
   useFocusEffect(
     useCallback(() => {
@@ -108,70 +74,27 @@ const Resources = () => {
         <View className="flex-1 justify-center items-center">
           <ActivityIndicator size={"large"} />
         </View>
-      ) : (
+      ) : resources.length > 0 ? (
         <ScrollView showsVerticalScrollIndicator={false}>
           <View
             className="p-2 gap-1.5"
             style={{
-              flexDirection: resources.length > 0 ? "row" : "none",
-              flexWrap: resources.length > 0 ? "wrap" : "nowrap",
-              justifyContent: resources.length > 0 ? "flex-start" : "center",
-              alignItems: resources.length > 0 ? "flex-start" : "center",
-              height: resources.length > 0 ? "auto" : "90%",
+              flexDirection: "row",
+              flexWrap: "wrap",
+              justifyContent: "flex-start",
+              alignItems: "flex-start",
+              height: "auto",
             }}
           >
-            {resources.length > 0 ? (
-              resources.map((resource, index) => (
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  key={index}
-                  className="bg-white p-4 rounded-lg mb-1"
-                  style={{ elevation: 5, width: isLink() ? "100%" : "49%" }}
-                  onPress={() => {
-                    if (isLink()) {
-                      openLink(resource.url);
-                    } else {
-                      openResource(resource);
-                    }
-                  }}
-                >
-                  <Text className="text-lg font-semibold line-clamp-1">
-                    {resource.title}
-                  </Text>
-                  <Text className="text-gray-500">{resource.uploaded_by}</Text>
-                  <Text className="text-gray-500 text-xs">
-                    Upload Date: {resource.created_at.split("T")[0]}
-                  </Text>
-                  <View className="flex-row justify-between items-center mt-3">
-                    <View className="flex-row items-center ">
-                      <EvilIcons name="like" size={22} color={"black"} />
-                      <Text className="text-gray-500 text-s">
-                        {resource.likes}
-                      </Text>
-                    </View>
-                    {!isLink() ? (
-                      <TouchableOpacity
-                        className="py-1.5 px-2 rounded-full"
-                        style={{ backgroundColor: theme.primaryColor(0.15) }}
-                        onPress={() => {
-                          downloadFile(resource.file_url, resource.title);
-                        }}
-                      >
-                        <AntDesign name="download" size={15} color={"gray"} />
-                      </TouchableOpacity>
-                    ) : (
-                      <View></View>
-                    )}
-                  </View>
-                </TouchableOpacity>
-              ))
-            ) : (
-              <View className="flex-1 justify-center items-center">
-                <Text className="text-gray-500">No resources available</Text>
-              </View>
-            )}
+            {resources.map((resource, index) => (
+              <ResourceCard res={resource} key={index} />
+            ))}
           </View>
         </ScrollView>
+      ) : (
+        <View className="flex-1 justify-center items-center">
+          <Text className="text-gray-500">No resources available</Text>
+        </View>
       )}
     </View>
   );
