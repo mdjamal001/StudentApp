@@ -32,6 +32,7 @@ export const db_init = async () => {
     CREATE TABLE subjects (
       id INTEGER PRIMARY KEY,
       subject_name TEXT,
+      subject_type TEXT,
       attendance_percent INTEGER,
       semester INTEGER,
       total_classes INTEGER,
@@ -119,7 +120,7 @@ export const db_init = async () => {
   
   for (let subject of subjects) {
     await db.execAsync(
-      `INSERT INTO subjects (id, subject_name, attendance_percent, semester, total_classes, attended_classes) VALUES (${subject.subject_id}, "${subject.subject_name}", 0, ${semester}, 0, 0)`
+      `INSERT INTO subjects (id, subject_name, subject_type, attendance_percent, semester, total_classes, attended_classes) VALUES (${subject.subject_id}, "${subject.subject_name}","${subject.subject_type}" 0, ${semester}, 0, 0)`
     );
   }
   for (let noti of notifications) {

@@ -28,19 +28,25 @@ const PrimaryAttendance = () => {
         const result = await db.getAllAsync(
           `SELECT * FROM subjects WHERE semester=4`
         );
-        const res = await db.getAllAsync(`SELECT * FROM attendance`);
-        let ovr_total_classes = 0;
-        let ovr_attended_classes = 0;
+        let ovr_total_classHours = 0;
+        let ovr_attended_classHours = 0;
         result.forEach((subject) => {
-          ovr_total_classes += subject.total_classes;
-          ovr_attended_classes += subject.attended_classes;
+        if(subject.subject_type == "theory"){
+            ovr_total_classHours += (subject.total_classes*1.5);
+            ovr_attended_classHours += (subject.attended_classes*1.5);
+        }
+        else{
+            ovr_total_classHours += (subject.total_classes*2);
+            ovr_attended_classHours += (subject.attended_classes*2);
+        }
+
         });
-        if (ovr_total_classes === 0) {
+        if (ovr_total_classHours === 0) {
           setAttPercent(0);
           return;
         }
         let att_percent = Math.round(
-          (ovr_attended_classes / ovr_total_classes) * 100
+          (ovr_attended_classHours / ovr_total_classHours) * 100
         );
         setAttPercent(att_percent);
       };
