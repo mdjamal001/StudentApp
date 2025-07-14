@@ -120,7 +120,7 @@ export const db_init = async () => {
   
   for (let subject of subjects) {
     await db.execAsync(
-      `INSERT INTO subjects (id, subject_name, subject_type, attendance_percent, semester, total_classes, attended_classes) VALUES (${subject.subject_id}, "${subject.subject_name}","${subject.subject_type}" 0, ${semester}, 0, 0)`
+      `INSERT INTO subjects (id, subject_name, subject_type, attendance_percent, semester, total_classes, attended_classes) VALUES (${subject.subject_id}, "${subject.subject_name}", "${subject.subject_type}", 0, ${semester}, 0, 0)`
     );
   }
   for (let noti of notifications) {
