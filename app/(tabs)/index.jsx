@@ -1,32 +1,67 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useCallback, useEffect } from "react";
-import { StyleSheet, View, Text, Button } from "react-native";
-import {useLocalSearchParams,useRouter } from "expo-router";
+import React, { useCallback, useEffect, useState } from "react";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Button,
+  Image,
+  ScrollView,
+  Touchable,
+} from "react-native";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useFocusEffect } from "@react-navigation/native";
 import { db_init } from "../../LocalStorage/database";
 import * as SQLite from "expo-sqlite";
 import { Link } from "expo-router";
+import { TouchableOpacity } from "react-native";
+import { AntDesign, Entypo, Feather } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { theme } from "../../Theme";
+import CircularProgress from "react-native-circular-progress-indicator";
+import NoticeBoard from "../../components/Home/NoticeBoard";
+import Preparation from "../../components/Home/Preparation";
+import Assignments from "../../components/Home/Assignments";
 
 const Index = () => {
-  const [key, setKey] = React.useState(0);
-  // useEffect(() => {
-  //   const init = async () => {
-  //     await db_init(); //Initialize the DB
-
-  //     //print the timetable
-  //     // const db = await SQLite.openDatabaseAsync("localStorage");
-  //     // const rows = await db.getAllAsync(
-  //     //   "SELECT * FROM timetable WHERE semester=4"
-  //     // );
-  //     // console.log("Rows: ", rows);
-  //   };
-  //   init();
-  // }, []);
-
+  const [name, setName] = useState("");
+  useEffect(() => {
+    const getName = async () => {
+      let n = await AsyncStorage.getItem("name");
+      setName(n);
+    };
+    getName();
+  });
   return (
-    <View className="flex-row flex-1 justify-center items-center">
+    <View className="flex-1 bg-white">
       <StatusBar style="dark" />
-      <Text className="text-3xl">Home Page</Text>
+      <View
+        className="h-28 flex-row items-center bg-white px-4 pt-12"
+        style={{ elevation: 3 }}
+      >
+        <TouchableOpacity>
+          <Feather name="menu" size={25} color={"black"} />
+        </TouchableOpacity>
+        <View className="flex-row items-center gap-x-1 ml-4">
+          <Image
+            source={require("../../assets/images/logo.png")}
+            style={{ width: 25, height: 25 }}
+          />
+          <Text className="font-bold text-2xl">JConnect</Text>
+        </View>
+      </View>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View className="p-5 pt-8">
+          <Text className="text-3xl font-bold">Hello!</Text>
+          <Text className="text-4xl font-bold">{name}</Text>
+        </View>
+        <Preparation />
+        {/* Notice Board */}
+        <Text className="text-2xl font-bold mx-5">Notice Board</Text>
+        <NoticeBoard />
+        <Assignments />
+        <View className="h-10" />
+      </ScrollView>
     </View>
   );
 };

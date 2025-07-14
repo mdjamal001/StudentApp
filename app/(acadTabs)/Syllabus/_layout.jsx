@@ -4,7 +4,7 @@ import { StyleSheet, View } from "react-native";
 
 const Layout = () => {
   return (
-    <Stack>
+    <Stack screenOptions={{ animation: "fade" }}>
       <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen name="showSyll" options={{ headerShown: false }} />
     </Stack>

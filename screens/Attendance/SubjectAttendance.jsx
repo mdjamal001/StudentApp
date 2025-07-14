@@ -99,12 +99,12 @@ const SubjectAttendance = () => {
     setMarkedStatus({ selectedDate: date, status });
     setShowModal(true);
   };
-  const addAtt=async ()=>{
+  const addAtt = async () => {
     const db = await SQLite.openDatabaseAsync("localStorage");
-    let x=markedStatus.selectedDate.day;
-    let y=""+x;
-    if(x<10){
-      y="0"+x;
+    let x = markedStatus.selectedDate.day;
+    let y = "" + x;
+    if (x < 10) {
+      y = "0" + x;
     }
     setDatesToBeMarked({
       ...datesToBeMarked,
@@ -121,14 +121,16 @@ const SubjectAttendance = () => {
       },
     });
     await db.execAsync(`INSERT INTO attendance (date, subject_id, status) 
-      VALUES ("${y}-${months2[markedStatus.selectedDate.month]}-${markedStatus.selectedDate.year}", ${params.id}, "Not Marked")`);
-  }
+      VALUES ("${y}-${months2[markedStatus.selectedDate.month]}-${
+      markedStatus.selectedDate.year
+    }", ${params.id}, "Not Marked")`);
+  };
   const handleAttUpdate = async () => {
     const db = await SQLite.openDatabaseAsync("localStorage");
-    let x=markedStatus.selectedDate.day;
-    let y=""+x;
-    if(x<10){
-      y="0"+x;
+    let x = markedStatus.selectedDate.day;
+    let y = "" + x;
+    if (x < 10) {
+      y = "0" + x;
     }
     await db.execAsync(
       `UPDATE attendance SET status="${markedStatus.status}" WHERE subject_id=${
@@ -147,11 +149,11 @@ const SubjectAttendance = () => {
       );
     }
     const result = await db.getAllAsync(
-          `SELECT * FROM subjects WHERE id=${params.id}`
-        );
-     let a= result[0].total_classes;
-     let b= result[0].attended_classes;
-     let c=b/a;
+      `SELECT * FROM subjects WHERE id=${params.id}`
+    );
+    let a = result[0].total_classes;
+    let b = result[0].attended_classes;
+    let c = b / a;
     await db.execAsync(
       `UPDATE subjects SET attendance_percent=${c}*100 WHERE id=${params.id}`
     );
@@ -177,6 +179,10 @@ const SubjectAttendance = () => {
   useFocusEffect(
     useCallback(() => {
       setTodayDate(
+        `${currentDate.year}-${months[currentDate.month]}-${currentDate.date}`
+      );
+      console.log(
+        "Today date: ",
         `${currentDate.year}-${months[currentDate.month]}-${currentDate.date}`
       );
       const getAttHistory = async () => {
@@ -352,7 +358,7 @@ const SubjectAttendance = () => {
                     activeOpacity={0.5}
                     className="p-2 flex-row rounded-md items-center"
                     style={{ backgroundColor: theme.primaryColor(1) }}
-                    onPress={()=>addAtt()}
+                    onPress={() => addAtt()}
                   >
                     <AntDesign name="plus" size={15} color={"white"} />
                     <Text className="text-white">Add</Text>
