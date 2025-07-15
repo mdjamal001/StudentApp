@@ -18,7 +18,7 @@ import { Picker } from "@react-native-picker/picker";
 import { theme } from "../../Theme";
 import ListObj from "../../components/Notifications/ListObj";
 import { supabase } from "../../utils/supabase";
-
+let i=0;
 const Notifications = () => {
    const [nlist,getnlist]=useState([]);
    const [load,loading]=useState(true);
@@ -31,11 +31,20 @@ const Notifications = () => {
     loading(true);
     const branch = await AsyncStorage.getItem("branch");
     const semester = parseInt(await AsyncStorage.getItem("semester"));
+    if(i==0){
+    const {data:res,error:er} = 
+            await supabase.from('notifications').select('*').eq('semester',semester).eq('branch',branch).order('sentdate',{ascending:false});
+    if(er){
+       console.log("error : "+er);
+      }
+      i++;
+    }else{
     const {data:res,error:er} = 
             await supabase.from('notifications').select('*').eq('semester',semester).eq('branch',branch).gte('sentdate',s).order('sentdate',{ascending:false});
     if(er){
        console.log("error : "+er);
       }
+    }
     if (res.length > 0){ 
       console.log(res);
       const db = await SQLite.openDatabaseAsync("localStorage");
